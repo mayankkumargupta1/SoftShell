@@ -278,12 +278,11 @@ hl.bind(mainMod .. " + D", hl.dsp.exec_cmd("quickshell ipc call launcher toggle"
 -- Super + R reloads the shell configuration
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("pkill -USR1 quickshell || quickshell"))
 
--- Workspaces Navigation (Instant native Hyprland dispatchers)
+-- Workspaces Navigation (Native Hyprland Lua dispatchers)
 for i = 1, 10 do
-	local ws = tostring(i)
 	local key = tostring(i % 10)
-	hl.bind(mainMod .. " + " .. key, hl.dsp.workspace({ name = ws }))
-	hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.movetoworkspace({ name = ws }))
+	hl.bind(mainMod .. " + " .. key, hl.dsp.focus({ workspace = i }))
+	hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = i }))
 end
 EOF
     success "Updated keybinds.lua with SoftShell bindings and native dispatchers."
@@ -303,7 +302,7 @@ apply_live_switchover() {
 
     info "Starting newly installed SoftShell in Hyprland session..."
     if command -v hyprctl &>/dev/null; then
-        hyprctl dispatch exec quickshell &>/dev/null || nohup quickshell >/dev/null 2>&1 &
+        hyprctl dispatch "hl.dsp.exec_cmd('quickshell')" &>/dev/null || nohup quickshell >/dev/null 2>&1 &
     else
         nohup quickshell >/dev/null 2>&1 &
     fi
