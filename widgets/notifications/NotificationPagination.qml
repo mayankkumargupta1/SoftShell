@@ -27,6 +27,7 @@ Item {
             width: 18
             height: 18
             radius: 5
+            antialiasing: true
             color: prevTap.pressed ? Qt.rgba(255, 255, 255, 0.2)
                  : (prevHover.hovered && root.currentPage > 0 ? Qt.rgba(255, 255, 255, 0.12) : "transparent")
             opacity: root.currentPage > 0 ? 1.0 : 0.25
@@ -73,6 +74,7 @@ Item {
                     width: index === root.currentPage ? 14 : 5
                     height: 5
                     radius: 2.5
+                    antialiasing: true
                     color: index === root.currentPage ? Theme.textPrimary : Qt.rgba(255, 255, 255, 0.25)
 
                     Behavior on width { NumberAnimation { duration: 180; easing.type: Easing.OutQuad } }
@@ -101,6 +103,7 @@ Item {
             width: 18
             height: 18
             radius: 5
+            antialiasing: true
             color: nextTap.pressed ? Qt.rgba(255, 255, 255, 0.2)
                  : (nextHover.hovered && root.currentPage < root.pageCount - 1 ? Qt.rgba(255, 255, 255, 0.12) : "transparent")
             opacity: root.currentPage < root.pageCount - 1 ? 1.0 : 0.25

@@ -185,6 +185,7 @@ PanelWindow {
         shadowOpacity: 0.35
         shadowBlur: 0.20
         shadowVerticalOffset: 1
+        layer.smooth: true
         z: -1
     }
 

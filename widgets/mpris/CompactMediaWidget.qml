@@ -22,6 +22,7 @@ Item {
             width: 18
             height: 18
             radius: 5
+            antialiasing: true
             color: Theme.surfaceBg
             anchors.verticalCenter: parent.verticalCenter
             clip: true

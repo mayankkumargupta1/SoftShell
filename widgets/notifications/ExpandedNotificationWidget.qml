@@ -96,6 +96,7 @@ Item {
                 width: simText.implicitWidth + 10
                 height: 18
                 radius: 5
+                antialiasing: true
                 color: simTap.pressed ? Qt.rgba(255, 255, 255, 0.2)
                      : (simHover.hovered ? Qt.rgba(255, 255, 255, 0.12) : Qt.rgba(255, 255, 255, 0.06))
 
@@ -153,6 +154,7 @@ Item {
                 width: clearContent.implicitWidth + 14
                 height: 20
                 radius: 6
+                antialiasing: true
                 visible: root.totalCount > 0
                 color: clearTap.pressed ? Qt.rgba(255, 255, 255, 0.22)
                      : (clearHover.hovered ? Qt.rgba(255, 255, 255, 0.14) : Qt.rgba(255, 255, 255, 0.08))

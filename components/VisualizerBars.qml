@@ -26,6 +26,7 @@ Item {
                 width: root.barWidth
                 height: root.minBarHeight
                 radius: root.barWidth / 2
+                antialiasing: true
                 color: root.barColor
                 anchors.bottom: parent.bottom
 

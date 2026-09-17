@@ -27,6 +27,7 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         height: root._isHovered || root._isDragging ? root.trackHeight + 2 : root.trackHeight
         radius: height / 2
+        antialiasing: true
         color: root.trackColor
 
         Behavior on height { NumberAnimation { duration: Theme.animFast } }
@@ -38,6 +39,7 @@ Item {
             anchors.bottom: parent.bottom
             width: Math.max(0, Math.min(parent.width, parent.width * root.value))
             radius: parent.radius
+            antialiasing: true
             color: root.progressColor
         }
     }
@@ -49,6 +51,7 @@ Item {
         width: root._isHovered || root._isDragging ? root.knobSize + 2 : 0
         height: width
         radius: width / 2
+        antialiasing: true
         color: root.knobColor
         opacity: root._isHovered || root._isDragging ? 1.0 : 0.0
 

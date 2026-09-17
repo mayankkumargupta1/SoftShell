@@ -72,6 +72,7 @@ PanelWindow {
         anchors.fill: parent
         color: Theme.launcherScrimBg
         opacity: launcherService.isOpen ? 1 : 0
+        layer.smooth: true
 
         Behavior on opacity {
             NumberAnimation { duration: 180 }

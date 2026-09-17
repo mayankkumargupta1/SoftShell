@@ -22,6 +22,7 @@ Rectangle {
     implicitWidth: parent ? parent.width : (Theme.launcherWidth - (Theme.launcherFillet * 2) - 20)
     implicitHeight: Theme.launcherInputHeight
     radius: 12
+    antialiasing: true
     color: Theme.launcherInputBg
     border.color: root.isCommandMode ? Theme.accentGreen : (input.activeFocus ? Theme.accentBlue : Theme.launcherInputBorder)
     border.width: 1
@@ -43,6 +44,7 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             height: 22
             radius: 6
+            antialiasing: true
             visible: root.isCommandMode
             width: modeRow.implicitWidth + 10
             color: Qt.rgba(48, 209, 88, 0.18)
@@ -130,6 +132,7 @@ Rectangle {
             width: 18
             height: 18
             radius: 9
+            antialiasing: true
             visible: input.text.length > 0
             color: clearMouse.containsMouse ? Qt.rgba(255, 255, 255, 0.25) : Qt.rgba(255, 255, 255, 0.12)
 

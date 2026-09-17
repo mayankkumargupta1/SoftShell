@@ -95,6 +95,7 @@ Rectangle {
                     width: 15
                     height: 15
                     radius: 4
+                    antialiasing: true
                     color: root.getAppColor(root.appName, root.summary, root.body)
                     border.width: 1
                     border.color: Qt.rgba(255, 255, 255, 0.2)
@@ -142,6 +143,7 @@ Rectangle {
                     width: 18
                     height: 18
                     radius: 9
+                    antialiasing: true
                     color: root.isPinned ? Qt.rgba(245, 166, 35, 0.20)
                          : (pinHover.hovered ? Qt.rgba(255, 255, 255, 0.15) : "transparent")
 
@@ -168,6 +170,7 @@ Rectangle {
                     width: 18
                     height: 18
                     radius: 9
+                    antialiasing: true
                     color: closeHover.hovered ? Qt.rgba(255, 55, 95, 0.25) : "transparent"
 
                     Text {

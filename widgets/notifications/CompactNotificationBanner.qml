@@ -81,6 +81,7 @@ Item {
             width: 20
             height: 20
             radius: 10
+            antialiasing: true
             color: closeMouse.pressed ? Qt.rgba(255, 255, 255, 0.28)
                  : (closeMouse.containsMouse ? Qt.rgba(255, 255, 255, 0.20) : Qt.rgba(255, 255, 255, 0.12))
             border.width: 1
@@ -180,6 +181,7 @@ Item {
                 width: queueLabel.implicitWidth + 10
                 height: 22
                 radius: 11
+                antialiasing: true
                 color: Qt.rgba(255, 255, 255, 0.16)
                 border.width: 1
                 border.color: Qt.rgba(255, 255, 255, 0.18)
@@ -202,6 +204,7 @@ Item {
                 width: 52
                 height: 24
                 radius: 7
+                antialiasing: true
                 color: viewMouse.pressed ? Qt.rgba(255, 255, 255, 0.24)
                      : (viewMouse.containsMouse ? Qt.rgba(255, 255, 255, 0.18) : Qt.rgba(255, 255, 255, 0.11))
                 border.width: 1

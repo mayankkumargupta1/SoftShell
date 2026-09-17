@@ -22,7 +22,10 @@ Item {
         width: root.fillet
         height: root.fillet
         z: 1
-        preferredRendererType: Shape.GeometryRenderer
+        preferredRendererType: Shape.CurveRenderer
+        layer.enabled: true
+        layer.smooth: true
+        layer.samples: 4
 
         ShapePath {
             fillColor: root.fillColor
@@ -61,6 +64,7 @@ Item {
         height: root.height + root.radius
         radius: root.radius
         color: root.fillColor
+        antialiasing: true
         z: 2
     }
 
@@ -73,7 +77,10 @@ Item {
         width: root.fillet
         height: root.fillet
         z: 1
-        preferredRendererType: Shape.GeometryRenderer
+        preferredRendererType: Shape.CurveRenderer
+        layer.enabled: true
+        layer.smooth: true
+        layer.samples: 4
 
         ShapePath {
             fillColor: root.fillColor

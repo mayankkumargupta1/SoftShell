@@ -15,6 +15,9 @@ Item {
     Item {
         id: disc
         anchors.fill: parent
+        layer.enabled: true
+        layer.smooth: true
+        layer.samples: 4
 
         // Smooth continuous vinyl rotation
         NumberAnimation on rotation {
@@ -47,8 +50,11 @@ Item {
                 id: artMask
                 anchors.fill: parent
                 radius: width / 2
+                antialiasing: true
                 visible: false
                 layer.enabled: true
+                layer.smooth: true
+                layer.samples: 4
             }
 
             Image {
@@ -77,6 +83,7 @@ Item {
             Rectangle {
                 anchors.fill: parent
                 radius: width / 2
+                antialiasing: true
                 color: "#1c1c24"
                 visible: albumArt.status !== Image.Ready || root.artUrl.length === 0
 

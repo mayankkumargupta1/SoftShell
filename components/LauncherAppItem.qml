@@ -21,6 +21,7 @@ Item {
         anchors.leftMargin: 2
         anchors.rightMargin: 2
         radius: 9
+        antialiasing: true
         color: root.isSelected ? Theme.launcherActiveBg : (mouseArea.containsMouse ? Theme.launcherItemHoverBg : "transparent")
 
         Behavior on color {
@@ -41,6 +42,7 @@ Item {
             width: 28
             height: 28
             radius: 7
+            antialiasing: true
             anchors.verticalCenter: parent.verticalCenter
             color: root.isSelected ? Qt.rgba(255, 255, 255, 0.18) : (root.app && root.app.isCommand ? Qt.rgba(48, 209, 88, 0.15) : Qt.rgba(255, 255, 255, 0.08))
             border.color: root.app && root.app.isCommand ? Qt.rgba(48, 209, 88, 0.35) : Qt.rgba(255, 255, 255, 0.12)
@@ -98,6 +100,7 @@ Item {
             width: 20
             height: 18
             radius: 5
+            antialiasing: true
             anchors.verticalCenter: parent.verticalCenter
             color: Qt.rgba(255, 255, 255, 0.22)
 

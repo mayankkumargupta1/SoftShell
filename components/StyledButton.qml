@@ -27,6 +27,7 @@ Item {
         id: bg
         anchors.fill: parent
         radius: root.radius
+        antialiasing: true
         color: tapHandler.pressed ? root.pressedBgColor : (hoverHandler.hovered ? root.hoverBgColor : root.bgColor)
         Behavior on color { ColorAnimation { duration: Theme.animFast } }
     }

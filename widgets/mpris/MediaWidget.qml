@@ -93,6 +93,7 @@ Item {
             Rectangle {
                 anchors.fill: parent
                 radius: 14
+                antialiasing: true
                 color: "#000000"
                 opacity: 0.4
                 anchors.topMargin: 2
@@ -103,6 +104,7 @@ Item {
                 id: imageMask
                 anchors.fill: parent
                 radius: 14
+                antialiasing: true
                 color: Theme.surfaceBg
                 clip: true
 
@@ -135,6 +137,7 @@ Item {
                 width: 20
                 height: 20
                 radius: 6
+                antialiasing: true
                 color: Theme.accentRed
                 anchors.right: parent.right
                 anchors.rightMargin: -4
@@ -277,6 +280,7 @@ Item {
                 width: 44
                 height: 44
                 radius: 22
+                antialiasing: true
                 color: Theme.surfaceBg
                 anchors.horizontalCenter: parent.horizontalCenter
 
