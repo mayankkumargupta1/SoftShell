@@ -18,33 +18,55 @@ Item {
     Rectangle {
         id: bg
         anchors.fill: parent
-        anchors.leftMargin: 2
-        anchors.rightMargin: 2
-        radius: 9
+        anchors.leftMargin: 4
+        anchors.rightMargin: 4
+        radius: 10
         antialiasing: true
         color: root.isSelected ? Theme.launcherActiveBg : (mouseArea.containsMouse ? Theme.launcherItemHoverBg : "transparent")
+        border.width: 1
+        border.color: root.isSelected ? Theme.launcherActiveBorder : (mouseArea.containsMouse ? Qt.rgba(255, 255, 255, 0.08) : "transparent")
 
         Behavior on color {
             ColorAnimation { duration: 120 }
+        }
+        Behavior on border.color {
+            ColorAnimation { duration: 120 }
+        }
+
+        // Apple Blue vertical accent pill on selected item
+        Rectangle {
+            anchors.left: parent.left
+            anchors.leftMargin: 3
+            anchors.verticalCenter: parent.verticalCenter
+            width: 3
+            height: 18
+            radius: 1.5
+            antialiasing: true
+            color: Theme.accentBlue
+            visible: root.isSelected
         }
     }
 
     Row {
         anchors.fill: parent
-        anchors.leftMargin: 10
-        anchors.rightMargin: 10
-        spacing: 10
+        anchors.leftMargin: root.isSelected ? 16 : 12
+        anchors.rightMargin: 12
+        spacing: 11
         anchors.verticalCenter: parent.verticalCenter
+
+        Behavior on anchors.leftMargin {
+            NumberAnimation { duration: 120; easing.type: Easing.OutCubic }
+        }
 
         // App Icon Container (Apple Squircle)
         Rectangle {
             id: iconBox
-            width: 28
-            height: 28
-            radius: 7
+            width: 32
+            height: 32
+            radius: 8
             antialiasing: true
             anchors.verticalCenter: parent.verticalCenter
-            color: root.isSelected ? Qt.rgba(255, 255, 255, 0.18) : (root.app && root.app.isCommand ? Qt.rgba(48, 209, 88, 0.15) : Qt.rgba(255, 255, 255, 0.08))
+            color: root.app && root.app.isCommand ? Qt.rgba(48, 209, 88, 0.16) : (root.isSelected ? Qt.rgba(255, 255, 255, 0.12) : Qt.rgba(255, 255, 255, 0.08))
             border.color: root.app && root.app.isCommand ? Qt.rgba(48, 209, 88, 0.35) : Qt.rgba(255, 255, 255, 0.12)
             border.width: 1
 
@@ -52,8 +74,8 @@ Item {
                 id: appIcon
                 visible: !root.app || !root.app.isCommand
                 anchors.centerIn: parent
-                implicitWidth: 18
-                implicitHeight: 18
+                implicitWidth: 20
+                implicitHeight: 20
                 source: (root.app && !root.app.isCommand && root.app.icon) ? Quickshell.iconPath(root.app.icon) : ""
             }
 
@@ -64,53 +86,74 @@ Item {
                 text: (root.app && root.app.iconGlyph) ? root.app.iconGlyph : "󰀻"
                 color: (root.app && root.app.isCommand) ? Theme.accentGreen : (root.isSelected ? "#ffffff" : Theme.textSecondary)
                 font.family: Theme.iconFontFamily
-                font.pixelSize: 14
+                font.pixelSize: 15
+                renderType: Text.NativeRendering
             }
         }
 
         // Two-tier Typography Column
         Column {
-            width: parent.width - iconBox.width - parent.spacing - (root.isSelected ? 32 : 0)
+            width: parent.width - iconBox.width - parent.spacing - (root.isSelected ? 64 : 0)
             anchors.verticalCenter: parent.verticalCenter
-            spacing: 1
+            spacing: 2
 
             Text {
                 width: parent.width
                 text: root.app ? root.app.name : ""
-                color: Theme.textPrimary
+                color: "#ffffff"
                 font.family: Theme.fontFamily
                 font.pixelSize: 13
                 font.weight: Font.DemiBold
                 elide: Text.ElideRight
+                renderType: Text.NativeRendering
             }
 
             Text {
                 width: parent.width
                 text: root.app && root.app.comment ? root.app.comment : (root.app && root.app.genericName ? root.app.genericName : (root.app && root.app.isCommand ? "Shell Command" : "Application"))
-                color: root.isSelected ? Qt.rgba(255, 255, 255, 0.78) : Theme.appleSubtext
+                color: root.isSelected ? Qt.rgba(255, 255, 255, 0.70) : Theme.appleSubtext
                 font.family: Theme.fontFamily
                 font.pixelSize: 11
                 elide: Text.ElideRight
+                renderType: Text.NativeRendering
             }
         }
 
-        // Right-aligned Enter indicator when selected
-        Rectangle {
+        // Right-aligned Keycap Action Pill (Apple / Raycast style)
+        Row {
             visible: root.isSelected
-            width: 20
-            height: 18
-            radius: 5
-            antialiasing: true
             anchors.verticalCenter: parent.verticalCenter
-            color: Qt.rgba(255, 255, 255, 0.22)
+            spacing: 5
 
             Text {
-                anchors.centerIn: parent
-                text: "↵"
-                color: "#ffffff"
+                anchors.verticalCenter: parent.verticalCenter
+                text: "Open"
+                color: Qt.rgba(255, 255, 255, 0.60)
                 font.family: Theme.fontFamily
-                font.pixelSize: 11
-                font.weight: Font.Bold
+                font.pixelSize: 10
+                font.weight: Font.Medium
+                renderType: Text.NativeRendering
+            }
+
+            Rectangle {
+                anchors.verticalCenter: parent.verticalCenter
+                width: 20
+                height: 18
+                radius: 4
+                antialiasing: true
+                color: Qt.rgba(255, 255, 255, 0.14)
+                border.width: 1
+                border.color: Qt.rgba(255, 255, 255, 0.22)
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "↵"
+                    color: "#ffffff"
+                    font.family: Theme.fontFamily
+                    font.pixelSize: 11
+                    font.bold: true
+                    renderType: Text.NativeRendering
+                }
             }
         }
     }

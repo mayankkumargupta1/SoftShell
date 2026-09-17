@@ -24,7 +24,7 @@ Rectangle {
     radius: 12
     antialiasing: true
     color: Theme.launcherInputBg
-    border.color: root.isCommandMode ? Theme.accentGreen : (input.activeFocus ? Theme.accentBlue : Theme.launcherInputBorder)
+    border.color: root.isCommandMode ? Theme.accentGreen : (input.activeFocus ? Qt.rgba(10, 132, 255, 0.50) : Theme.launcherInputBorder)
     border.width: 1
 
     Behavior on border.color {
@@ -33,9 +33,9 @@ Rectangle {
 
     Row {
         anchors.fill: parent
-        anchors.leftMargin: 10
-        anchors.rightMargin: 10
-        spacing: 8
+        anchors.leftMargin: 12
+        anchors.rightMargin: 12
+        spacing: 10
         anchors.verticalCenter: parent.verticalCenter
 
         // Prefix Icon / Mode Badge
@@ -47,8 +47,8 @@ Rectangle {
             antialiasing: true
             visible: root.isCommandMode
             width: modeRow.implicitWidth + 10
-            color: Qt.rgba(48, 209, 88, 0.18)
-            border.color: Qt.rgba(48, 209, 88, 0.4)
+            color: Qt.rgba(48, 209, 88, 0.16)
+            border.color: Qt.rgba(48, 209, 88, 0.45)
             border.width: 1
 
             Row {
@@ -61,6 +61,7 @@ Rectangle {
                     font.pixelSize: 11
                     color: Theme.accentGreen
                     anchors.verticalCenter: parent.verticalCenter
+                    renderType: Text.NativeRendering
                 }
                 Text {
                     text: "Terminal"
@@ -69,6 +70,7 @@ Rectangle {
                     font.weight: Font.DemiBold
                     color: Theme.accentGreen
                     anchors.verticalCenter: parent.verticalCenter
+                    renderType: Text.NativeRendering
                 }
             }
         }
@@ -79,13 +81,14 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             text: "󰍉"
             font.family: Theme.iconFontFamily
-            font.pixelSize: 14
-            color: input.text.length > 0 ? Theme.accentBlue : Theme.textTertiary
+            font.pixelSize: 15
+            color: input.text.length > 0 ? Theme.accentBlue : Qt.rgba(255, 255, 255, 0.40)
+            renderType: Text.NativeRendering
         }
 
         // Search Input
         Item {
-            width: parent.width - (badge.visible ? badge.width + parent.spacing : 20) - (clearBtn.visible ? 24 : 0)
+            width: parent.width - (badge.visible ? badge.width + parent.spacing : 22) - (clearBtn.visible ? 24 : 0)
             height: parent.height
             anchors.verticalCenter: parent.verticalCenter
 
@@ -93,12 +96,13 @@ Rectangle {
                 id: input
                 anchors.fill: parent
                 verticalAlignment: TextInput.AlignVCenter
-                color: Theme.textPrimary
+                color: "#ffffff"
                 font.family: Theme.fontFamily
-                font.pixelSize: 12
+                font.pixelSize: 13
                 focus: true
                 selectByMouse: true
                 clip: true
+                renderType: Text.NativeRendering
 
                 Keys.onUpPressed: (event) => { root.navigateUp(); event.accepted = true; }
                 Keys.onDownPressed: (event) => { root.navigateDown(); event.accepted = true; }
@@ -118,10 +122,11 @@ Rectangle {
                 anchors.fill: parent
                 verticalAlignment: Text.AlignVCenter
                 visible: input.text.length === 0 && !input.inputMethodComposing
-                text: "Start with > for a command..."
-                color: Theme.textTertiary
+                text: "Search applications or type > for commands..."
+                color: Qt.rgba(255, 255, 255, 0.35)
                 font.family: Theme.fontFamily
-                font.pixelSize: 12
+                font.pixelSize: 13
+                renderType: Text.NativeRendering
             }
         }
 

@@ -16,7 +16,6 @@ Item {
         if (!stats) return Theme.barText;
         if (stats.isCharging) return Theme.statGreen;
         if (stats.batteryPercent <= 20) return Theme.statRed;
-        if (stats.batteryPercent <= 40) return Theme.statYellow;
         return Theme.barText;
     }
 
@@ -50,7 +49,7 @@ Item {
         Text {
             anchors.verticalCenter: parent.verticalCenter
             text: root.stats ? root.stats.batteryPercent + "%" : "—"
-            font.family: Theme.monoFontFamily
+            font.family: Theme.fontFamily
             font.pixelSize: 11
             font.weight: Font.Medium
             color: root.batteryColor()

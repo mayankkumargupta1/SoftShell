@@ -18,7 +18,7 @@ Item {
     function calculateHeight() {
         if (!launcherService) return 180;
         var count = Math.min(5, Math.max(1, launcherService.filteredApps.length));
-        return (count * (Theme.launcherItemHeight + 3)) + Theme.launcherInputHeight + 36;
+        return (count * (Theme.launcherItemHeight + 4)) + Theme.launcherInputHeight + 40;
     }
 
     // Inverted Dynamic Island Background with concave ear fillets (AMOLED Black)
@@ -34,27 +34,27 @@ Item {
     Rectangle {
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
-        width: parent.width - (Theme.launcherFillet * 2) - 24
+        width: parent.width - (Theme.launcherFillet * 2) - 20
         height: 1
-        color: Qt.rgba(255, 255, 255, 0.12)
+        color: Qt.rgba(255, 255, 255, 0.16)
         z: 3
     }
 
     // Content container strictly centered and bounded inside the AMOLED body
     Column {
         anchors.horizontalCenter: parent.horizontalCenter
-        width: parent.width - (Theme.launcherFillet * 2) - 16
+        width: parent.width - (Theme.launcherFillet * 2) - 12
         anchors.top: parent.top
-        anchors.topMargin: 12
+        anchors.topMargin: 14
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 10
+        anchors.bottomMargin: 12
         spacing: 6
         z: 4
 
         // 1. Applications & Commands List View
         Item {
             width: parent.width
-            height: root.implicitHeight - Theme.launcherInputHeight - 34
+            height: root.implicitHeight - Theme.launcherInputHeight - 40
             clip: true
 
             ListView {
@@ -86,11 +86,11 @@ Item {
                 visible: !launcherService || launcherService.filteredApps.length === 0
                 Column {
                     anchors.centerIn: parent
-                    spacing: 4
+                    spacing: 6
                     Text {
                         text: "󰍉"
                         font.family: Theme.iconFontFamily
-                        font.pixelSize: 20
+                        font.pixelSize: 22
                         color: Theme.textTertiary
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
@@ -103,6 +103,14 @@ Item {
                     }
                 }
             }
+        }
+
+        // Subtle Apple Frosted Hairline Divider
+        Rectangle {
+            width: parent.width - 12
+            anchors.horizontalCenter: parent.horizontalCenter
+            height: 1
+            color: Qt.rgba(255, 255, 255, 0.08)
         }
 
         // 2. Bottom Search Bar Capsule

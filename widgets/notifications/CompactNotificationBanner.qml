@@ -9,7 +9,7 @@ Item {
     signal viewClicked()
 
     implicitHeight: 42
-    implicitWidth: bannerRow.implicitWidth
+    implicitWidth: 460
 
     readonly property var currentNotif: notifService ? notifService.activeBanner : null
     readonly property int queueCount: notifService ? notifService.bannerQueueCount : 0
@@ -68,13 +68,15 @@ Item {
         return lines.join(" • ");
     }
 
-    // Unified Apple Banner Layout
+    // 1. Left Section: Close Button + App Icon (Anchored stably to left)
     Row {
-        id: bannerRow
-        anchors.centerIn: parent
-        spacing: 12
+        id: leftSection
+        anchors.left: parent.left
+        anchors.leftMargin: 22
+        anchors.verticalCenter: parent.verticalCenter
+        spacing: 10
 
-        // 1. Floating Circular Close Button (Image 3 inspired)
+        // Floating Circular Close Button
         Rectangle {
             id: closeCircle
             anchors.verticalCenter: parent.verticalCenter
@@ -112,7 +114,7 @@ Item {
             }
         }
 
-        // 2. Large Apple Squircle App Icon Badge (34x34 with 9px radius)
+        // Apple Squircle App Icon Badge (34x34 with 9px radius)
         Rectangle {
             id: appIconBadge
             anchors.verticalCenter: parent.verticalCenter
@@ -133,105 +135,114 @@ Item {
                 renderType: Text.NativeRendering
             }
         }
+    }
 
-        // 3. Two-Tier Apple Typography Column (Strict Single-Line per Tier)
-        Column {
+    // 2. Right Section: Action Pill Button + Queue Counter (Anchored stably to right)
+    Row {
+        id: rightSection
+        anchors.right: parent.right
+        anchors.rightMargin: 22
+        anchors.verticalCenter: parent.verticalCenter
+        spacing: 6
+
+        // Queue Counter Pill (only visible when more alerts are queued)
+        Rectangle {
+            id: queuePill
             anchors.verticalCenter: parent.verticalCenter
-            width: 270
-            spacing: 1
-            clip: true
+            visible: root.queueCount > 0
+            width: queueLabel.implicitWidth + 10
+            height: 22
+            radius: 11
+            antialiasing: true
+            color: Qt.rgba(255, 255, 255, 0.16)
+            border.width: 1
+            border.color: Qt.rgba(255, 255, 255, 0.18)
 
-            // Line 1: Bold Title (Strictly 1 line, elided on right)
             Text {
-                width: parent.width
-                text: root.cleanTitle(root.currentNotif)
-                font.family: Theme.fontFamily
-                font.pixelSize: 12
+                id: queueLabel
+                anchors.centerIn: parent
+                text: "+" + root.queueCount
+                font.family: Theme.monoFontFamily
+                font.pixelSize: 11
                 font.bold: true
                 color: Theme.textPrimary
-                maximumLineCount: 1
-                elide: Text.ElideRight
-                clip: true
-                renderType: Text.NativeRendering
-            }
-
-            // Line 2: Message Body (Strictly 1 line, cleaned of origin prefixes, elided on right)
-            Text {
-                width: parent.width
-                text: root.cleanBody(root.currentNotif)
-                font.family: Theme.fontFamily
-                font.pixelSize: 11
-                color: Theme.appleSubtext
-                maximumLineCount: 1
-                elide: Text.ElideRight
-                clip: true
                 renderType: Text.NativeRendering
             }
         }
 
-        // 4. Right Action Pill Button / Queue Indicator (Image 3 inspired)
-        Row {
+        // Translucent Action Pill ("View" / "Open")
+        Rectangle {
+            id: viewButton
             anchors.verticalCenter: parent.verticalCenter
-            spacing: 6
+            width: 52
+            height: 24
+            radius: 7
+            antialiasing: true
+            color: viewMouse.pressed ? Qt.rgba(255, 255, 255, 0.24)
+                 : (viewMouse.containsMouse ? Qt.rgba(255, 255, 255, 0.18) : Qt.rgba(255, 255, 255, 0.11))
+            border.width: 1
+            border.color: Qt.rgba(255, 255, 255, 0.14)
 
-            // Queue Counter Pill (if more than 1 alert queued)
-            Rectangle {
-                anchors.verticalCenter: parent.verticalCenter
-                visible: root.queueCount > 0
-                width: queueLabel.implicitWidth + 10
-                height: 22
-                radius: 11
-                antialiasing: true
-                color: Qt.rgba(255, 255, 255, 0.16)
-                border.width: 1
-                border.color: Qt.rgba(255, 255, 255, 0.18)
-
-                Text {
-                    id: queueLabel
-                    anchors.centerIn: parent
-                    text: "+" + root.queueCount
-                    font.family: Theme.monoFontFamily
-                    font.pixelSize: 11
-                    font.bold: true
-                    color: Theme.textPrimary
-                    renderType: Text.NativeRendering
-                }
+            Text {
+                anchors.centerIn: parent
+                text: "View"
+                font.family: Theme.fontFamily
+                font.pixelSize: 11
+                font.bold: true
+                color: Theme.textPrimary
+                renderType: Text.NativeRendering
             }
 
-            // Translucent Action Pill ("View" / "Open")
-            Rectangle {
-                anchors.verticalCenter: parent.verticalCenter
-                width: 52
-                height: 24
-                radius: 7
-                antialiasing: true
-                color: viewMouse.pressed ? Qt.rgba(255, 255, 255, 0.24)
-                     : (viewMouse.containsMouse ? Qt.rgba(255, 255, 255, 0.18) : Qt.rgba(255, 255, 255, 0.11))
-                border.width: 1
-                border.color: Qt.rgba(255, 255, 255, 0.14)
-
-                Text {
-                    anchors.centerIn: parent
-                    text: "View"
-                    font.family: Theme.fontFamily
-                    font.pixelSize: 11
-                    font.bold: true
-                    color: Theme.textPrimary
-                    renderType: Text.NativeRendering
-                }
-
-                MouseArea {
-                    id: viewMouse
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    preventStealing: true
-                    onClicked: (mouse) => {
-                        mouse.accepted = true;
-                        root.viewClicked();
-                    }
+            MouseArea {
+                id: viewMouse
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                preventStealing: true
+                onClicked: (mouse) => {
+                    mouse.accepted = true;
+                    root.viewClicked();
                 }
             }
+        }
+    }
+
+    // 3. Center Section: Two-Tier Typography Column (Fills available space between left and right)
+    Column {
+        id: textColumn
+        anchors.left: leftSection.right
+        anchors.leftMargin: 12
+        anchors.right: rightSection.left
+        anchors.rightMargin: 12
+        anchors.verticalCenter: parent.verticalCenter
+        spacing: 1
+        clip: true
+
+        // Line 1: Bold Title (Strictly 1 line, elided on right)
+        Text {
+            width: parent.width
+            text: root.cleanTitle(root.currentNotif)
+            font.family: Theme.fontFamily
+            font.pixelSize: 12
+            font.bold: true
+            color: Theme.textPrimary
+            maximumLineCount: 1
+            elide: Text.ElideRight
+            clip: true
+            renderType: Text.NativeRendering
+        }
+
+        // Line 2: Message Body (Strictly 1 line, cleaned of origin prefixes, elided on right)
+        Text {
+            width: parent.width
+            text: root.cleanBody(root.currentNotif)
+            font.family: Theme.fontFamily
+            font.pixelSize: 11
+            color: Theme.appleSubtext
+            maximumLineCount: 1
+            elide: Text.ElideRight
+            clip: true
+            renderType: Text.NativeRendering
         }
     }
 }

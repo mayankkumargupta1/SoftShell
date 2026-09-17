@@ -12,30 +12,30 @@ Item {
     implicitWidth: statsRow.implicitWidth
     implicitHeight: Theme.barHeight
 
-    // Color helpers
+    // Color helpers — Apple monochrome by default, amber/red only under heavy load
     function cpuColor() {
         if (!stats) return Theme.barText;
         if (stats.cpuPercent >= 90) return Theme.statRed;
-        if (stats.cpuPercent >= 70) return Theme.statYellow;
+        if (stats.cpuPercent >= 80) return Theme.statYellow;
         return Theme.barText;
     }
     function tempColor() {
         if (!stats) return Theme.barText;
         if (stats.cpuTempC >= 85) return Theme.statRed;
-        if (stats.cpuTempC >= 65) return Theme.statYellow;
+        if (stats.cpuTempC >= 75) return Theme.statYellow;
         return Theme.barText;
     }
     function ramColor() {
         if (!stats) return Theme.barText;
         if (stats.ramPercent >= 90) return Theme.statRed;
-        if (stats.ramPercent >= 75) return Theme.statYellow;
+        if (stats.ramPercent >= 80) return Theme.statYellow;
         return Theme.barText;
     }
 
     Row {
         id: statsRow
         anchors.verticalCenter: parent.verticalCenter
-        spacing: 12
+        spacing: 10
 
         // CPU %
         Row {
@@ -52,7 +52,7 @@ Item {
             Text {
                 anchors.verticalCenter: parent.verticalCenter
                 text: root.stats ? root.stats.cpuPercent + "%" : "—"
-                font.family: Theme.monoFontFamily
+                font.family: Theme.fontFamily
                 font.pixelSize: 11
                 font.weight: Font.Medium
                 color: root.cpuColor()
@@ -75,7 +75,7 @@ Item {
             Text {
                 anchors.verticalCenter: parent.verticalCenter
                 text: root.stats ? root.stats.ramUsedGb + "G" : "—"
-                font.family: Theme.monoFontFamily
+                font.family: Theme.fontFamily
                 font.pixelSize: 11
                 font.weight: Font.Medium
                 color: root.ramColor()
@@ -98,7 +98,7 @@ Item {
             Text {
                 anchors.verticalCenter: parent.verticalCenter
                 text: root.stats ? root.stats.cpuTempC + "°" : "—"
-                font.family: Theme.monoFontFamily
+                font.family: Theme.fontFamily
                 font.pixelSize: 11
                 font.weight: Font.Medium
                 color: root.tempColor()

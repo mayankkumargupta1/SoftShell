@@ -1,0 +1,131 @@
+import QtQuick 2.15
+import Quickshell
+import Quickshell.Hyprland
+import "../../theme"
+
+// BarAppMenu — Apple macOS left-side menu bar items:
+//  Apple logo | Active App Name (bold) | File | Edit | View | Go | Tools | Window | Help
+Item {
+    id: root
+
+    implicitHeight: Theme.barHeight
+    implicitWidth: menuRow.implicitWidth
+
+    // Determine current active application name
+    readonly property string currentAppName: {
+        let win = Hyprland.focusedWindow;
+        if (!win) return "Preview";
+        let c = win.cls || win.initialClass || "";
+        if (c.length > 0) {
+            return c.charAt(0).toUpperCase() + c.slice(1);
+        }
+        let t = win.title || "";
+        if (t.length > 0) {
+            let parts = t.split(" - ");
+            return parts[parts.length - 1].trim();
+        }
+        return "Preview";
+    }
+
+    readonly property var menuItems: ["File", "Edit", "View", "Go", "Tools", "Window", "Help"]
+
+    Row {
+        id: menuRow
+        anchors.verticalCenter: parent.verticalCenter
+        spacing: 2
+
+        // 1. Apple Logo
+        Item {
+            anchors.verticalCenter: parent.verticalCenter
+            width: 26
+            height: 20
+
+            Rectangle {
+                anchors.fill: parent
+                radius: 4
+                color: appleHover.hovered ? Theme.barItemHover : "transparent"
+                Behavior on color { ColorAnimation { duration: 100 } }
+            }
+
+            Text {
+                anchors.centerIn: parent
+                text: "\uf179"
+                font.family: Theme.iconFontFamily
+                font.pixelSize: 14
+                color: Theme.barText
+                renderType: Text.NativeRendering
+            }
+
+            HoverHandler {
+                id: appleHover
+                cursorShape: Qt.PointingHandCursor
+            }
+        }
+
+        // 2. Active Application Name (Bold)
+        Item {
+            anchors.verticalCenter: parent.verticalCenter
+            width: appNameText.implicitWidth + 14
+            height: 20
+
+            Rectangle {
+                anchors.fill: parent
+                radius: 4
+                color: appHover.hovered ? Theme.barItemHover : "transparent"
+                Behavior on color { ColorAnimation { duration: 100 } }
+            }
+
+            Text {
+                id: appNameText
+                anchors.centerIn: parent
+                text: root.currentAppName
+                font.family: Theme.fontFamily
+                font.pixelSize: 13
+                font.weight: Font.Bold
+                color: Theme.barText
+                renderType: Text.NativeRendering
+            }
+
+            HoverHandler {
+                id: appHover
+                cursorShape: Qt.PointingHandCursor
+            }
+        }
+
+        // 3. Menu Items (File, Edit, View, Go, Tools, Window, Help)
+        Repeater {
+            model: root.menuItems
+
+            delegate: Item {
+                required property string modelData
+
+                anchors.verticalCenter: parent.verticalCenter
+                width: menuText.implicitWidth + 14
+                height: 20
+
+                Rectangle {
+                    anchors.fill: parent
+                    radius: 4
+                    color: itemHover.hovered ? Theme.barItemHover : "transparent"
+                    Behavior on color { ColorAnimation { duration: 100 } }
+                }
+
+                Text {
+                    id: menuText
+                    anchors.centerIn: parent
+                    text: modelData
+                    font.family: Theme.fontFamily
+                    font.pixelSize: 13
+                    font.weight: Font.Normal
+                    color: Theme.barText
+                    renderType: Text.NativeRendering
+                }
+
+                HoverHandler {
+                    id: itemHover
+                    cursorShape: Qt.PointingHandCursor
+                }
+            }
+        }
+    }
+}

@@ -8,6 +8,7 @@ import "../services"
 import "../widgets/clock"
 import "../widgets/mpris"
 import "../widgets/notifications"
+import "../widgets/clipboard"
 
 PanelWindow {
     id: root
@@ -44,6 +45,11 @@ PanelWindow {
     // Reactive notification service
     NotificationService {
         id: notifService
+    }
+
+    // Reactive clipboard response service
+    ClipboardService {
+        id: clipboardService
     }
 
     // Interaction state: expanded when clicked/pinned (hover never pins, it just peeks)
@@ -120,7 +126,9 @@ PanelWindow {
             }
         } else {
             if (notifService.hasActiveBanner) {
-                return Theme.notchNotificationCollapsedWidth;
+                return Theme.notchNotificationCollapsedWidth + (notifService.bannerQueueCount > 0 ? 38 : 0);
+            } else if (clipboardService.hasActiveCopy) {
+                return Theme.notchClipboardWidth;
             } else if (isMusicActive) {
                 return Theme.notchMusicCollapsedWidth;
             } else {
@@ -272,7 +280,7 @@ PanelWindow {
             CompactNotificationBanner {
                 id: notifBanner
                 notifService: notifService
-                anchors.centerIn: parent
+                anchors.fill: parent
                 visible: notifService.hasActiveBanner
                 onViewClicked: {
                     // Expand island to show full notification, then auto-collapse after 6s
@@ -281,17 +289,25 @@ PanelWindow {
                 }
             }
 
+            // State C: Active Clipboard Copy Response (Priority 2)
+            CompactClipboardWidget {
+                id: clipboardWidget
+                clipboardService: clipboardService
+                anchors.centerIn: parent
+                visible: !notifService.hasActiveBanner && clipboardService.hasActiveCopy
+            }
+
             // State A: Idle Collapsed (Time Centered)
             CompactClockWidget {
                 timeService: timeService
                 anchors.centerIn: parent
-                visible: !notifService.hasActiveBanner && !root.isMusicActive
+                visible: !notifService.hasActiveBanner && !clipboardService.hasActiveCopy && !root.isMusicActive
             }
 
             // State B: Music Collapsed (Time on Left, Music Info on Right, No Controls)
             Item {
                 anchors.fill: parent
-                visible: !notifService.hasActiveBanner && root.isMusicActive
+                visible: !notifService.hasActiveBanner && !clipboardService.hasActiveCopy && root.isMusicActive
 
                 CompactClockWidget {
                     timeService: timeService
@@ -325,9 +341,10 @@ PanelWindow {
                 Item {
                     id: tier1
                     anchors.top: parent.top
+                    anchors.topMargin: 18
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    height: 56
+                    height: 54
 
                     ClockWidget {
                         timeService: timeService
@@ -351,13 +368,13 @@ PanelWindow {
                 ExpandedNotificationWidget {
                     notifService: notifService
                     anchors.top: tier1.bottom
-                    anchors.topMargin: 6
+                    anchors.topMargin: 20
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.leftMargin: root.islandFillet + 16
                     anchors.rightMargin: root.islandFillet + 16
                     anchors.bottom: parent.bottom
-                    anchors.bottomMargin: 10
+                    anchors.bottomMargin: 14
                 }
             }
 

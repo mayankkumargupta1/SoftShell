@@ -31,11 +31,14 @@ QtObject {
     readonly property int notchMusicExpandedWidth: 560
     readonly property int notchMusicExpandedHeight: 60
 
+    // Clipboard Response Geometry
+    readonly property int notchClipboardWidth: 290
+
     // Notification Geometry & Timing (macOS Big Sur & iOS Standard)
     readonly property int notchNotificationCollapsedWidth: 480
     readonly property int notchNotificationCollapsedHeight: 52
     readonly property int notchExpandedWithNotifsWidth: 600
-    readonly property int notchExpandedWithNotifsHeight: 324
+    readonly property int notchExpandedWithNotifsHeight: 360
     readonly property int notifSingleDuration: 7000
     readonly property int notifQueuedDuration: 4000
 
@@ -69,25 +72,30 @@ QtObject {
     readonly property int fontSizeLarge: 18
     readonly property int fontSizeClockLarge: 26
 
-    // --- Launcher Tokens (Compact Apple Dimensions) ---
-    readonly property int launcherWidth: 460
-    readonly property int launcherMaxHeight: 380
-    readonly property int launcherItemHeight: 40
+    // --- Launcher Tokens (Apple Spotlight Dimensions) ---
+    readonly property int launcherWidth: 480
+    readonly property int launcherMaxHeight: 400
+    readonly property int launcherItemHeight: 46
     readonly property real launcherRadius: 22.0
     readonly property real launcherFillet: 16.0
-    readonly property int launcherInputHeight: 38
-    readonly property color launcherActiveBg: "#0071e3"
-    readonly property color launcherItemHoverBg: Qt.rgba(255, 255, 255, 0.07)
-    readonly property color launcherInputBg: Qt.rgba(255, 255, 255, 0.08)
-    readonly property color launcherInputBorder: Qt.rgba(255, 255, 255, 0.14)
-    readonly property color launcherScrimBg: Qt.rgba(0, 0, 0, 0.40)
+    readonly property int launcherInputHeight: 42
+    readonly property color launcherActiveBg: Qt.rgba(255, 255, 255, 0.12)
+    readonly property color launcherActiveBorder: Qt.rgba(255, 255, 255, 0.16)
+    readonly property color launcherItemHoverBg: Qt.rgba(255, 255, 255, 0.06)
+    readonly property color launcherInputBg: Qt.rgba(255, 255, 255, 0.07)
+    readonly property color launcherInputBorder: Qt.rgba(255, 255, 255, 0.12)
+    readonly property color launcherScrimBg: Qt.rgba(0, 0, 0, 0.45)
 
-    // --- Menu Bar Tokens (macOS Sonoma style) ---
+    // --- Menu Bar Tokens (macOS Sonoma / Sequoia translucent glass) ---
     readonly property int barHeight: 28
-    readonly property color barBg: "#f5f5f7"
-    readonly property color barText: "#1d1d1f"
-    readonly property color barMuted: "#86868b"
-    readonly property color barBorder: Qt.rgba(0, 0, 0, 0.10)
+    readonly property color barBgTop: Qt.rgba(255, 255, 255, 0.14)
+    readonly property color barBgBottom: Qt.rgba(255, 255, 255, 0.08)
+    readonly property color barBg: Qt.rgba(255, 255, 255, 0.10)
+    readonly property color barText: "#ffffff"
+    readonly property color barTextMuted: Qt.rgba(255, 255, 255, 0.85)
+    readonly property color barBorder: Qt.rgba(255, 255, 255, 0.08)
+    readonly property color barHighlight: Qt.rgba(255, 255, 255, 0.16)
+    readonly property color barItemHover: Qt.rgba(255, 255, 255, 0.16)
     // Safe center gap wider than the widest notification pill (480px)
     readonly property int barIslandGap: 500
 

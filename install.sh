@@ -286,6 +286,21 @@ for i = 1, 10 do
 end
 EOF
     success "Updated keybinds.lua with SoftShell bindings and native dispatchers."
+
+    # 4.3 Ensure layer blur rules exist in settings.lua
+    local SETTINGS_FILE="$HYPR_CONFIG_DIR/config/settings.lua"
+    if [ -f "$SETTINGS_FILE" ]; then
+        if ! grep -q "quickshell:bar" "$SETTINGS_FILE"; then
+            info "Configuring layer blur rules for SoftShell in $SETTINGS_FILE..."
+            cat << 'EOF' >> "$SETTINGS_FILE"
+
+-- SoftShell Menu Bar blur rules (macOS frosted glass vibrancy)
+hl.layer_rule({ "blur", "quickshell:bar" })
+hl.layer_rule({ "ignorealpha 0.1", "quickshell:bar" })
+EOF
+            success "Added layer rules to settings.lua."
+        fi
+    fi
 }
 
 # ------------------------------------------------------------------------------
@@ -357,6 +372,7 @@ main() {
     echo -e "${GREEN}${BOLD} SoftShell Installation Finished Successfully!        ${NC}"
     echo -e "${GREEN}${BOLD}======================================================${NC}"
     echo -e "• Dynamic Island Notch: Active at top of monitor"
+    echo -e "• macOS Menu Bar: Thin translucent frosted glass with Apple controls"
     echo -e "• Launcher: Press ${CYAN}Super + A${NC} or ${CYAN}Super + D${NC} to toggle"
     echo -e "• Shell Config Directory: ${CYAN}~/.config/quickshell${NC}"
     echo -e "• Rollback Available: ${CYAN}$CURRENT_BACKUP_DIR/rollback.sh${NC}\n"

@@ -38,7 +38,19 @@ PanelWindow {
     Rectangle {
         id: barBg
         anchors.fill: parent
-        color: Theme.barBg
+        gradient: Gradient {
+            GradientStop { position: 0.0; color: Theme.barBgTop }
+            GradientStop { position: 1.0; color: Theme.barBgBottom }
+        }
+
+        // Hairline top highlight — subtle Apple glass specular edge
+        Rectangle {
+            anchors.left:   parent.left
+            anchors.right:  parent.right
+            anchors.top:    parent.top
+            height: 1
+            color: Theme.barHighlight
+        }
 
         // Hairline bottom border — macOS menu bar separator
         Rectangle {
@@ -50,22 +62,22 @@ PanelWindow {
         }
     }
 
-    // --- Content: Left | Center gap | Right ---
+    // --- Content: Left (App Menu) | Center gap (Dynamic Island) | Right (Status Icons) ---
     Item {
         anchors.fill: parent
         anchors.leftMargin:  16
         anchors.rightMargin: 16
 
-        // LEFT: Workspace dots
-        BarWorkspaceWidget {
-            id: workspaceWidget
+        // LEFT: Apple logo | App Name | File | Edit | View | Go | Tools | Window | Help
+        BarAppMenu {
+            id: appMenu
             anchors.left:           parent.left
             anchors.verticalCenter: parent.verticalCenter
         }
 
         // CENTER: Empty space reserved for the dynamic island.
         // The island lives on WlrLayer.Overlay and renders on top of this bar.
-        // We simply leave Theme.barIslandGap px of dead space in the center.
+        // We leave Theme.barIslandGap px of safe dead space in the center.
         Item {
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.top:    parent.top
@@ -73,48 +85,12 @@ PanelWindow {
             width: Theme.barIslandGap
         }
 
-        // RIGHT: Network | separator | Temp | CPU | RAM | separator | Battery
-        Row {
-            id: rightRow
+        // RIGHT: Battery | Wi-Fi | Control Center
+        BarStatusIcons {
+            id: statusIcons
+            stats: statsService
             anchors.right:          parent.right
             anchors.verticalCenter: parent.verticalCenter
-            spacing: 14
-
-            // WiFi
-            BarNetworkWidget {
-                stats: statsService
-                anchors.verticalCenter: parent.verticalCenter
-            }
-
-            // Thin separator
-            Rectangle {
-                anchors.verticalCenter: parent.verticalCenter
-                width: 1
-                height: 12
-                color: Theme.barBorder
-                antialiasing: true
-            }
-
-            // CPU / RAM / Temp
-            BarSystemStats {
-                stats: statsService
-                anchors.verticalCenter: parent.verticalCenter
-            }
-
-            // Thin separator
-            Rectangle {
-                anchors.verticalCenter: parent.verticalCenter
-                width: 1
-                height: 12
-                color: Theme.barBorder
-                antialiasing: true
-            }
-
-            // Battery
-            BarBatteryWidget {
-                stats: statsService
-                anchors.verticalCenter: parent.verticalCenter
-            }
         }
     }
 }
