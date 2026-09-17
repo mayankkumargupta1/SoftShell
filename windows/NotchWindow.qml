@@ -48,9 +48,36 @@ PanelWindow {
 
     // Interaction state: expanded on hover or when clicked/pinned
     property bool isPinned: false
-    // When notification banner is active, do NOT expand on hover; allow clicking notification buttons.
-    // Only expand on click or pin. After notification is gone, behaves generally (expand on hover).
-    readonly property bool isExpanded: isPinned || (!notifService.hasActiveBanner && hoverHandler.hovered)
+
+    // Suppress hover expansion whenever a notification is active in shrink mode,
+    // or until the cursor leaves the island after a notification is dismissed/finished.
+    property bool suppressHoverExpand: notifService.hasActiveBanner
+
+    Connections {
+        target: notifService
+        function onHasActiveBannerChanged() {
+            if (notifService.hasActiveBanner) {
+                root.suppressHoverExpand = true;
+            }
+        }
+    }
+
+    Connections {
+        target: hoverHandler
+        function onHoveredChanged() {
+            // Forward hover state to pause/resume auto-dismiss timer
+            notifService.isIslandHovered = hoverHandler.hovered;
+
+            // Only clear suppression after mouse has left the island and no banner is active
+            if (!hoverHandler.hovered && !notifService.hasActiveBanner) {
+                root.suppressHoverExpand = false;
+            }
+        }
+    }
+
+    // When notification is there in shrink mode, hover does NOT expand;
+    // only clicking empty space (or pin) expands.
+    readonly property bool isExpanded: isPinned || (!root.suppressHoverExpand && hoverHandler.hovered)
     readonly property bool isMusicActive: mediaService.isMediaActive
 
     // --- Dynamic Multi-State Island Geometry ---
@@ -213,6 +240,9 @@ PanelWindow {
                 notifService: notifService
                 anchors.centerIn: parent
                 visible: notifService.hasActiveBanner
+                onViewClicked: {
+                    root.isPinned = true;
+                }
             }
 
             // State A: Idle Collapsed (Time Centered)

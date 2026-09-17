@@ -36,8 +36,8 @@ QtObject {
     readonly property int notchNotificationCollapsedHeight: 52
     readonly property int notchExpandedWithNotifsWidth: 600
     readonly property int notchExpandedWithNotifsHeight: 324
-    readonly property int notifSingleDuration: 3000
-    readonly property int notifQueuedDuration: 2000
+    readonly property int notifSingleDuration: 7000
+    readonly property int notifQueuedDuration: 4000
 
     // macOS Frosted Glass & Notification Tokens
     readonly property color cardBg: Qt.rgba(255, 255, 255, 0.08)

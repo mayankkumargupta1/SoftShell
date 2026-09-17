@@ -6,6 +6,7 @@ Item {
     id: root
 
     property NotificationService notifService: null
+    signal viewClicked()
 
     implicitHeight: 42
     implicitWidth: bannerRow.implicitWidth
@@ -187,7 +188,7 @@ Item {
                     preventStealing: true
                     onClicked: (mouse) => {
                         mouse.accepted = true;
-                        // Button click consumed, does NOT expand island
+                        root.viewClicked();
                     }
                 }
             }

@@ -18,10 +18,28 @@ Item {
     property var _bannerQueue: []
     property int bannerQueueCount: 0
 
+    // Hover state forwarded from dynamic island (pauses banner auto-advance)
+    property bool isIslandHovered: false
+
+    onIsIslandHoveredChanged: {
+        if (isIslandHovered) {
+            // Pause timer while user is hovering over island so buttons remain clickable
+            if (bannerTimer.running) {
+                bannerTimer.stop();
+            }
+        } else {
+            // Resume timer with fresh duration when cursor leaves island
+            if (root.hasActiveBanner && !bannerTimer.running) {
+                bannerTimer.interval = root._bannerQueue.length > 0 ? Theme.notifQueuedDuration : Theme.notifSingleDuration;
+                bannerTimer.restart();
+            }
+        }
+    }
+
     // Unique ID counter
     property int _idCounter: 1000
 
-    // Banner display timer (3s for single, 2s if more in queue)
+    // Banner display timer (pauses when island is hovered)
     Timer {
         id: bannerTimer
         repeat: false
@@ -36,48 +54,59 @@ Item {
         imageSupported: true
 
         onNotification: (n) => {
-            root._handleIncoming({
-                id: n.id || ++root._idCounter,
-                appName: n.appName || "Notification",
-                summary: n.summary || "",
-                body: n.body || "",
-                appIcon: n.appIcon || "",
-                isPinned: false,
-                timestamp: Date.now(),
-                timeStr: "Just now"
-            })
+            try {
+                n.tracked = true;
+                let notifObj = {
+                    id: (n.id !== undefined && n.id !== 0) ? n.id : (++root._idCounter),
+                    appName: n.appName ? String(n.appName) : "Notification",
+                    summary: n.summary ? String(n.summary) : "",
+                    body: n.body ? String(n.body) : "",
+                    appIcon: n.appIcon ? String(n.appIcon) : "",
+                    isPinned: false,
+                    timestamp: Date.now(),
+                    timeStr: "Just now"
+                };
+                root._handleIncoming(notifObj);
+            } catch (err) {
+                console.warn("[NotificationService] Error in onNotification:", err);
+            }
         }
     }
 
     // Push an incoming notification into history and banner queue
     function _handleIncoming(notif) {
-        // 1. Add to top of history
-        historyModel.insert(0, {
-            id: notif.id,
-            appName: notif.appName,
-            summary: notif.summary,
-            body: notif.body,
-            appIcon: notif.appIcon,
-            isPinned: notif.isPinned,
-            timestamp: notif.timestamp,
-            timeStr: notif.timeStr
-        });
-        root.totalCount = historyModel.count;
-        root.hasNotifications = historyModel.count > 0;
+        try {
+            // 1. Add to top of history
+            historyModel.insert(0, {
+                id: notif.id,
+                appName: notif.appName,
+                summary: notif.summary,
+                body: notif.body,
+                appIcon: notif.appIcon,
+                isPinned: notif.isPinned,
+                timestamp: notif.timestamp,
+                timeStr: notif.timeStr
+            });
+            root.totalCount = historyModel.count;
+            root.hasNotifications = historyModel.count > 0;
 
-        // 2. Queue for collapsed banner presentation
-        if (root.activeBanner === null) {
-            root.activeBanner = notif;
-            root.hasActiveBanner = true;
-            bannerTimer.interval = root._bannerQueue.length > 0 ? Theme.notifQueuedDuration : Theme.notifSingleDuration;
-            bannerTimer.restart();
-        } else {
-            root._bannerQueue.push(notif);
-            root.bannerQueueCount = root._bannerQueue.length;
-            // If another was already showing, accelerate its remainder if needed
-            if (bannerTimer.running && bannerTimer.interval > Theme.notifQueuedDuration) {
-                bannerTimer.interval = Theme.notifQueuedDuration;
+            // 2. Queue for collapsed banner presentation
+            if (root.activeBanner === null) {
+                root.activeBanner = notif;
+                root.hasActiveBanner = true;
+                if (!root.isIslandHovered) {
+                    bannerTimer.interval = root._bannerQueue.length > 0 ? Theme.notifQueuedDuration : Theme.notifSingleDuration;
+                    bannerTimer.restart();
+                }
+            } else {
+                root._bannerQueue.push(notif);
+                root.bannerQueueCount = root._bannerQueue.length;
+                if (!root.isIslandHovered && bannerTimer.running && bannerTimer.interval > Theme.notifQueuedDuration) {
+                    bannerTimer.interval = Theme.notifQueuedDuration;
+                }
             }
+        } catch (err) {
+            console.warn("[NotificationService] Error in _handleIncoming:", err);
         }
     }
 
@@ -86,8 +115,10 @@ Item {
             root.activeBanner = root._bannerQueue.shift();
             root.bannerQueueCount = root._bannerQueue.length;
             root.hasActiveBanner = true;
-            bannerTimer.interval = root._bannerQueue.length > 0 ? Theme.notifQueuedDuration : Theme.notifSingleDuration;
-            bannerTimer.restart();
+            if (!root.isIslandHovered) {
+                bannerTimer.interval = root._bannerQueue.length > 0 ? Theme.notifQueuedDuration : Theme.notifSingleDuration;
+                bannerTimer.restart();
+            }
         } else {
             root.activeBanner = null;
             root.bannerQueueCount = 0;
