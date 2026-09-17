@@ -1,0 +1,7 @@
+module qs.widgets.mpris
+VinylDisc 1.0 VinylDisc.qml
+MusicControlButton 1.0 MusicControlButton.qml
+CompactMusicWidget 1.0 CompactMusicWidget.qml
+ExpandedMusicWidget 1.0 ExpandedMusicWidget.qml
+CompactMediaWidget 1.0 CompactMediaWidget.qml
+MediaWidget 1.0 MediaWidget.qml

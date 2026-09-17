@@ -1,0 +1,3 @@
+module qs.widgets.clock
+ClockWidget 1.0 ClockWidget.qml
+CompactClockWidget 1.0 CompactClockWidget.qml
