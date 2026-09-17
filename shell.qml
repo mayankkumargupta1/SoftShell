@@ -3,6 +3,7 @@ import Quickshell
 import "windows"
 
 Scope {
+    BarWindow {}
     NotchWindow {}
     LauncherWindow {}
 }

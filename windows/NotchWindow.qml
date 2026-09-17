@@ -46,21 +46,35 @@ PanelWindow {
         id: notifService
     }
 
-    // Interaction state: expanded on hover or when clicked/pinned
+    // Interaction state: expanded when clicked/pinned (hover never pins, it just peeks)
     property bool isPinned: false
 
-    // Suppress hover expansion whenever a notification is active in shrink mode,
-    // or until the cursor leaves the island after a notification is dismissed/finished.
-    property bool suppressHoverExpand: notifService.hasActiveBanner
-
+    // Auto-reset isPinned when nothing is left to show in expanded state
+    // (notification cleared or island dismissed via close button)
     Connections {
         target: notifService
         function onHasActiveBannerChanged() {
             if (notifService.hasActiveBanner) {
+                // New banner: block hover expansion
                 root.suppressHoverExpand = true;
+            } else {
+                // Banner gone: if nothing is pinned to show, unpin
+                if (!notifService.hasNotifications) {
+                    root.isPinned = false;
+                }
+            }
+        }
+        function onHasNotificationsChanged() {
+            // All notifications cleared from expanded center: collapse
+            if (!notifService.hasNotifications && !notifService.hasActiveBanner) {
+                root.isPinned = false;
             }
         }
     }
+
+    // Suppress hover expansion whenever a notification is active in shrink mode,
+    // or until the cursor leaves the island after a notification is dismissed/finished.
+    property bool suppressHoverExpand: notifService.hasActiveBanner
 
     Connections {
         target: hoverHandler
@@ -71,6 +85,20 @@ PanelWindow {
             // Only clear suppression after mouse has left the island and no banner is active
             if (!hoverHandler.hovered && !notifService.hasActiveBanner) {
                 root.suppressHoverExpand = false;
+            }
+        }
+    }
+
+    // Auto-collapse timer: fires after user taps "View" to read notification
+    // Gives 6 seconds to read, then collapses unless still hovered.
+    Timer {
+        id: autoCollapseTimer
+        interval: 6000
+        repeat: false
+        running: false
+        onTriggered: {
+            if (!hoverHandler.hovered) {
+                root.isPinned = false;
             }
         }
     }
@@ -203,14 +231,19 @@ PanelWindow {
             cursorShape: Qt.PointingHandCursor
         }
 
-        // Background Click Area (z: 0): clicks on empty space of the island expand/toggle it.
-        // Clicks on interactive child buttons (inside contentLayer at z: 10) are consumed and do not expand the island.
+        // Background Click Area (z: 0): clicks on empty space toggle expand/collapse.
+        // Child buttons in contentLayer (z: 10) use their own TapHandler/MouseArea with
+        // propagateComposedEvents: false so clicks don't bubble through to here.
         MouseArea {
             id: backgroundClickArea
             anchors.fill: parent
             z: 0
             cursorShape: Qt.PointingHandCursor
-            onClicked: root.isPinned = !root.isPinned
+            onClicked: {
+                root.isPinned = !root.isPinned;
+                // Cancel any pending auto-collapse since user explicitly toggled
+                autoCollapseTimer.stop();
+            }
         }
 
         // 1. The Dynamic Island Background Shape
@@ -228,6 +261,19 @@ PanelWindow {
             anchors.fill: parent
             z: 10
 
+            // Transparent blocking MouseArea: sits below all child buttons (z: -1 within this item).
+            // Ensures that any click reaching this layer does NOT propagate to backgroundClickArea.
+            // The background expand/collapse is handled via backgroundClickArea's z: 0 areas
+            // that are NOT covered by interactive content.
+            MouseArea {
+                anchors.fill: parent
+                z: -1
+                // Accept the event but do nothing — prevents bubbling to backgroundClickArea
+                // for regions covered by interactive content.
+                propagateComposedEvents: false
+                onClicked: (mouse) => { mouse.accepted = true; }
+                onPressed: (mouse) => { mouse.accepted = true; }
+            }
         // 1. COLLAPSED VIEW (Height 36px)
         Item {
             id: collapsedContainer
@@ -242,7 +288,9 @@ PanelWindow {
                 anchors.centerIn: parent
                 visible: notifService.hasActiveBanner
                 onViewClicked: {
+                    // Expand island to show full notification, then auto-collapse after 6s
                     root.isPinned = true;
+                    autoCollapseTimer.restart();
                 }
             }
 

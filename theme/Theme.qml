@@ -81,4 +81,22 @@ QtObject {
     readonly property color launcherInputBg: Qt.rgba(255, 255, 255, 0.08)
     readonly property color launcherInputBorder: Qt.rgba(255, 255, 255, 0.14)
     readonly property color launcherScrimBg: Qt.rgba(0, 0, 0, 0.40)
+
+    // --- Menu Bar Tokens (macOS Sonoma style) ---
+    readonly property int barHeight: 28
+    readonly property color barBg: "#f5f5f7"
+    readonly property color barText: "#1d1d1f"
+    readonly property color barMuted: "#86868b"
+    readonly property color barBorder: Qt.rgba(0, 0, 0, 0.10)
+    // Safe center gap wider than the widest notification pill (480px)
+    readonly property int barIslandGap: 500
+
+    // --- System Stats Accent Colors (Apple HIG traffic-light style) ---
+    readonly property color statGreen: "#34c759"
+    readonly property color statYellow: "#ff9f0a"
+    readonly property color statRed: "#ff3b30"
+
+    // --- Additional animation constants ---
+    readonly property int animFast: 120
+    readonly property int animMedium: 200
 }
