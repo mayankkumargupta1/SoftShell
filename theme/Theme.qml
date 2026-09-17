@@ -86,16 +86,16 @@ QtObject {
     readonly property color launcherInputBorder: Qt.rgba(255, 255, 255, 0.12)
     readonly property color launcherScrimBg: Qt.rgba(0, 0, 0, 0.45)
 
-    // --- Menu Bar Tokens (macOS Sonoma / Sequoia translucent glass) ---
-    readonly property int barHeight: 28
-    readonly property color barBgTop: Qt.rgba(255, 255, 255, 0.14)
-    readonly property color barBgBottom: Qt.rgba(255, 255, 255, 0.08)
-    readonly property color barBg: Qt.rgba(255, 255, 255, 0.10)
+    // --- Menu Bar Tokens (Modern macOS Sonoma / Sequoia borderless glass) ---
+    readonly property int barHeight: 32
+    readonly property color barBgTop: Qt.rgba(255, 255, 255, 0.12)
+    readonly property color barBgBottom: Qt.rgba(255, 255, 255, 0.04)
+    readonly property color barBg: Qt.rgba(255, 255, 255, 0.08)
     readonly property color barText: "#ffffff"
     readonly property color barTextMuted: Qt.rgba(255, 255, 255, 0.85)
-    readonly property color barBorder: Qt.rgba(255, 255, 255, 0.08)
-    readonly property color barHighlight: Qt.rgba(255, 255, 255, 0.16)
-    readonly property color barItemHover: Qt.rgba(255, 255, 255, 0.16)
+    readonly property color barBorder: "transparent"
+    readonly property color barHighlight: "transparent"
+    readonly property color barItemHover: Qt.rgba(255, 255, 255, 0.18)
     // Safe center gap wider than the widest notification pill (480px)
     readonly property int barIslandGap: 500
 

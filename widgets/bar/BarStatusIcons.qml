@@ -15,13 +15,13 @@ Item {
     Row {
         id: iconsRow
         anchors.verticalCenter: parent.verticalCenter
-        spacing: 8
+        spacing: 14
 
         // 1. Battery Icon
         Item {
             anchors.verticalCenter: parent.verticalCenter
             width: 32
-            height: 20
+            height: 22
 
             Rectangle {
                 anchors.fill: parent
@@ -91,7 +91,7 @@ Item {
         Item {
             anchors.verticalCenter: parent.verticalCenter
             width: 26
-            height: 20
+            height: 22
 
             Rectangle {
                 anchors.fill: parent
@@ -107,6 +107,8 @@ Item {
                 font.pixelSize: 15
                 color: Theme.barText
                 renderType: Text.NativeRendering
+                style: Text.Raised
+                styleColor: Qt.rgba(0, 0, 0, 0.40)
             }
 
             HoverHandler {

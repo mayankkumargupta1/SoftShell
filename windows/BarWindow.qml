@@ -19,6 +19,9 @@ PanelWindow {
     anchors.right:  true
     anchors.bottom: false
 
+    // Offset top margin by -1 to eliminate any top display border
+    margins.top: -1
+
     implicitHeight: Theme.barHeight
 
     // Push windows down so they start below the bar
@@ -34,7 +37,12 @@ PanelWindow {
         id: statsService
     }
 
-    // --- Bar Background ---
+    // Wallpaper management service (ensures active wallpaper is maintained)
+    WallpaperService {
+        id: wallpaperService
+    }
+
+    // --- Bar Background (Pure borderless modern macOS translucent glass) ---
     Rectangle {
         id: barBg
         anchors.fill: parent
@@ -42,31 +50,13 @@ PanelWindow {
             GradientStop { position: 0.0; color: Theme.barBgTop }
             GradientStop { position: 1.0; color: Theme.barBgBottom }
         }
-
-        // Hairline top highlight — subtle Apple glass specular edge
-        Rectangle {
-            anchors.left:   parent.left
-            anchors.right:  parent.right
-            anchors.top:    parent.top
-            height: 1
-            color: Theme.barHighlight
-        }
-
-        // Hairline bottom border — macOS menu bar separator
-        Rectangle {
-            anchors.left:   parent.left
-            anchors.right:  parent.right
-            anchors.bottom: parent.bottom
-            height: 1
-            color: Theme.barBorder
-        }
     }
 
     // --- Content: Left (App Menu) | Center gap (Dynamic Island) | Right (Status Icons) ---
     Item {
         anchors.fill: parent
-        anchors.leftMargin:  16
-        anchors.rightMargin: 16
+        anchors.leftMargin:  20
+        anchors.rightMargin: 20
 
         // LEFT: Apple logo | App Name | File | Edit | View | Go | Tools | Window | Help
         BarAppMenu {

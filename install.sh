@@ -72,6 +72,7 @@ check_and_install_dependencies() {
         "cliphist"
         "grim"
         "slurp"
+        "mpvpaper"
         "ttf-jetbrains-mono-nerd"
     )
 
@@ -143,6 +144,8 @@ else
 fi
 
 echo "Restarting desktop shell..."
+systemctl --user stop softshell-wallpaper.service 2>/dev/null || true
+killall mpvpaper 2>/dev/null || true
 killall quickshell 2>/dev/null || true
 if command -v serpantinumd &>/dev/null; then
     serpantinumd start &>/dev/null &
@@ -169,6 +172,7 @@ deploy_softshell() {
         "widgets"
         "windows"
         "services"
+        "scripts"
         "assets"
         "AGENTS.md"
         "README.md"
@@ -179,6 +183,8 @@ deploy_softshell() {
             cp -r "$SCRIPT_DIR/$item" "$QS_CONFIG_DIR/"
         fi
     done
+
+    chmod +x "$QS_CONFIG_DIR/scripts/"*.sh 2>/dev/null || true
 
     success "SoftShell deployed successfully to $QS_CONFIG_DIR."
 }
@@ -206,6 +212,9 @@ hl.on("hyprland.start", function()
 	
 	-- SoftShell Quickshell Desktop Environment
 	hl.exec_cmd("quickshell")
+	
+	-- SoftShell Wallpaper Manager (mpvpaper daemon)
+	hl.exec_cmd("bash " .. os.getenv("HOME") .. "/.config/quickshell/scripts/wallpaper.sh init")
 	
 	-- Secrets and Authentication
 	hl.exec_cmd("gnome-keyring-daemon --start --components=secrets")
@@ -275,6 +284,8 @@ hl.bind(mainMod .. " + E", hl.dsp.exec_cmd("nautilus"))
 -- Super + A and Super + D trigger SoftShell Dynamic Island launcher
 hl.bind(mainMod .. " + A", hl.dsp.exec_cmd("quickshell ipc call launcher toggle"))
 hl.bind(mainMod .. " + D", hl.dsp.exec_cmd("quickshell ipc call launcher toggle"))
+-- Super + W cycles desktop wallpaper from ~/Pictures/Wallpapers
+hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("bash ~/.config/quickshell/scripts/wallpaper.sh next"))
 -- Super + R reloads the shell configuration
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("pkill -USR1 quickshell || quickshell"))
 
@@ -287,11 +298,14 @@ end
 EOF
     success "Updated keybinds.lua with SoftShell bindings and native dispatchers."
 
-    # 4.3 Ensure layer blur rules exist in settings.lua
+    # 4.3 Ensure window gaps and layer blur rules exist in settings.lua
     local SETTINGS_FILE="$HYPR_CONFIG_DIR/config/settings.lua"
     if [ -f "$SETTINGS_FILE" ]; then
+        info "Configuring window gaps (gaps_in=5, gaps_out=10 for uniform 10px gaps) and layer blur rules in $SETTINGS_FILE..."
+        sed -i 's/gaps_in = [0-9]*/gaps_in = 5/' "$SETTINGS_FILE" 2>/dev/null || true
+        sed -i 's/gaps_out = [0-9]*/gaps_out = 10/' "$SETTINGS_FILE" 2>/dev/null || true
+        sed -i 's/float_gaps = [0-9]*/float_gaps = 10/' "$SETTINGS_FILE" 2>/dev/null || true
         if ! grep -q "quickshell:bar" "$SETTINGS_FILE"; then
-            info "Configuring layer blur rules for SoftShell in $SETTINGS_FILE..."
             cat << 'EOF' >> "$SETTINGS_FILE"
 
 -- SoftShell Menu Bar blur rules (macOS frosted glass vibrancy)

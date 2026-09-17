@@ -38,12 +38,12 @@ Item {
         Item {
             anchors.verticalCenter: parent.verticalCenter
             width: 26
-            height: 20
+            height: 22
 
             Rectangle {
                 anchors.fill: parent
                 radius: 4
-                color: appleHover.hovered ? Theme.barItemHover : "transparent"
+                color: (appleTap.pressed || appleHover.hovered) ? Theme.barItemHover : "transparent"
                 Behavior on color { ColorAnimation { duration: 100 } }
             }
 
@@ -54,19 +54,28 @@ Item {
                 font.pixelSize: 14
                 color: Theme.barText
                 renderType: Text.NativeRendering
+                style: Text.Raised
+                styleColor: Qt.rgba(0, 0, 0, 0.40)
             }
 
             HoverHandler {
                 id: appleHover
                 cursorShape: Qt.PointingHandCursor
             }
+
+            TapHandler {
+                id: appleTap
+                onTapped: {
+                    Quickshell.execDetached(["quickshell", "ipc", "call", "launcher", "toggle"]);
+                }
+            }
         }
 
         // 2. Active Application Name (Bold)
         Item {
             anchors.verticalCenter: parent.verticalCenter
-            width: appNameText.implicitWidth + 14
-            height: 20
+            width: appNameText.implicitWidth + 16
+            height: 22
 
             Rectangle {
                 anchors.fill: parent
@@ -84,6 +93,8 @@ Item {
                 font.weight: Font.Bold
                 color: Theme.barText
                 renderType: Text.NativeRendering
+                style: Text.Raised
+                styleColor: Qt.rgba(0, 0, 0, 0.40)
             }
 
             HoverHandler {
@@ -100,8 +111,8 @@ Item {
                 required property string modelData
 
                 anchors.verticalCenter: parent.verticalCenter
-                width: menuText.implicitWidth + 14
-                height: 20
+                width: menuText.implicitWidth + 16
+                height: 22
 
                 Rectangle {
                     anchors.fill: parent
@@ -119,6 +130,8 @@ Item {
                     font.weight: Font.Normal
                     color: Theme.barText
                     renderType: Text.NativeRendering
+                    style: Text.Raised
+                    styleColor: Qt.rgba(0, 0, 0, 0.40)
                 }
 
                 HoverHandler {

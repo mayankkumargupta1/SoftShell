@@ -30,15 +30,6 @@ Item {
         fillet: Theme.launcherFillet
     }
 
-    // Top subtle specular highlight edge (bounded strictly inside body)
-    Rectangle {
-        anchors.top: parent.top
-        anchors.horizontalCenter: parent.horizontalCenter
-        width: parent.width - (Theme.launcherFillet * 2) - 20
-        height: 1
-        color: Qt.rgba(255, 255, 255, 0.16)
-        z: 3
-    }
 
     // Content container strictly centered and bounded inside the AMOLED body
     Column {
