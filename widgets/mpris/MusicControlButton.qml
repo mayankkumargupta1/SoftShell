@@ -17,8 +17,8 @@ Item {
     implicitHeight: 28
 
     // Interactive state
-    readonly property bool isHovered: hoverHandler.hovered
-    readonly property bool isPressed: tapHandler.pressed
+    readonly property bool isHovered: mouseArea.containsMouse
+    readonly property bool isPressed: mouseArea.pressed
 
     scale: isPressed ? 0.90 : (isHovered ? 1.04 : 1.0)
 
@@ -62,15 +62,15 @@ Item {
         }
     }
 
-    HoverHandler {
-        id: hoverHandler
+    MouseArea {
+        id: mouseArea
+        anchors.fill: parent
+        hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-    }
-
-    TapHandler {
-        id: tapHandler
-        gesturePolicy: TapHandler.ReleaseWithinBounds
-        grabPermissions: PointerHandler.CanTakeOverFromItems | PointerHandler.CanTakeOverFromHandlersOfSameType | PointerHandler.ApprovesTakeOverByNothing
-        onTapped: root.clicked()
+        preventStealing: true
+        onClicked: (mouse) => {
+            mouse.accepted = true;
+            root.clicked();
+        }
     }
 }

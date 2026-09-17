@@ -28,8 +28,8 @@ Item {
             height: 18
             radius: 5
             antialiasing: true
-            color: prevTap.pressed ? Qt.rgba(255, 255, 255, 0.2)
-                 : (prevHover.hovered && root.currentPage > 0 ? Qt.rgba(255, 255, 255, 0.12) : "transparent")
+            color: prevMouse.pressed ? Qt.rgba(255, 255, 255, 0.2)
+                 : (prevMouse.containsMouse && root.currentPage > 0 ? Qt.rgba(255, 255, 255, 0.12) : "transparent")
             opacity: root.currentPage > 0 ? 1.0 : 0.25
 
             Text {
@@ -41,20 +41,18 @@ Item {
                 renderType: Text.NativeRendering
             }
 
-            HoverHandler {
-                id: prevHover
+            MouseArea {
+                id: prevMouse
+                anchors.fill: parent
+                hoverEnabled: true
                 cursorShape: root.currentPage > 0 ? Qt.PointingHandCursor : Qt.ArrowCursor
-            }
-
-            TapHandler {
-                id: prevTap
+                preventStealing: true
                 enabled: root.currentPage > 0
-                gesturePolicy: TapHandler.ReleaseWithinBounds
-                grabPermissions: PointerHandler.CanTakeOverFromItems | PointerHandler.CanTakeOverFromHandlersOfSameType | PointerHandler.ApprovesTakeOverByNothing
-                onTapped: {
+                onClicked: (mouse) => {
+                    mouse.accepted = true;
                     if (root.currentPage > 0) {
-                        root.currentPage--
-                        root.pageChanged(root.currentPage)
+                        root.currentPage--;
+                        root.pageChanged(root.currentPage);
                     }
                 }
             }
@@ -80,17 +78,16 @@ Item {
                     Behavior on width { NumberAnimation { duration: 180; easing.type: Easing.OutQuad } }
                     Behavior on color { ColorAnimation { duration: 180 } }
 
-                    HoverHandler {
-                        id: dotHover
+                    MouseArea {
+                        id: dotMouse
+                        anchors.fill: parent
+                        hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
-                    }
-
-                    TapHandler {
-                        gesturePolicy: TapHandler.ReleaseWithinBounds
-                        grabPermissions: PointerHandler.CanTakeOverFromItems | PointerHandler.CanTakeOverFromHandlersOfSameType | PointerHandler.ApprovesTakeOverByNothing
-                        onTapped: {
-                            root.currentPage = index
-                            root.pageChanged(index)
+                        preventStealing: true
+                        onClicked: (mouse) => {
+                            mouse.accepted = true;
+                            root.currentPage = index;
+                            root.pageChanged(index);
                         }
                     }
                 }
@@ -104,8 +101,8 @@ Item {
             height: 18
             radius: 5
             antialiasing: true
-            color: nextTap.pressed ? Qt.rgba(255, 255, 255, 0.2)
-                 : (nextHover.hovered && root.currentPage < root.pageCount - 1 ? Qt.rgba(255, 255, 255, 0.12) : "transparent")
+            color: nextMouse.pressed ? Qt.rgba(255, 255, 255, 0.2)
+                 : (nextMouse.containsMouse && root.currentPage < root.pageCount - 1 ? Qt.rgba(255, 255, 255, 0.12) : "transparent")
             opacity: root.currentPage < root.pageCount - 1 ? 1.0 : 0.25
 
             Text {
@@ -117,20 +114,18 @@ Item {
                 renderType: Text.NativeRendering
             }
 
-            HoverHandler {
-                id: nextHover
+            MouseArea {
+                id: nextMouse
+                anchors.fill: parent
+                hoverEnabled: true
                 cursorShape: root.currentPage < root.pageCount - 1 ? Qt.PointingHandCursor : Qt.ArrowCursor
-            }
-
-            TapHandler {
-                id: nextTap
+                preventStealing: true
                 enabled: root.currentPage < root.pageCount - 1
-                gesturePolicy: TapHandler.ReleaseWithinBounds
-                grabPermissions: PointerHandler.CanTakeOverFromItems | PointerHandler.CanTakeOverFromHandlersOfSameType | PointerHandler.ApprovesTakeOverByNothing
-                onTapped: {
+                onClicked: (mouse) => {
+                    mouse.accepted = true;
                     if (root.currentPage < root.pageCount - 1) {
-                        root.currentPage++
-                        root.pageChanged(root.currentPage)
+                        root.currentPage++;
+                        root.pageChanged(root.currentPage);
                     }
                 }
             }

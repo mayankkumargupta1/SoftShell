@@ -28,6 +28,16 @@ Rectangle {
         id: hoverHandler
     }
 
+    MouseArea {
+        anchors.fill: parent
+        z: -1
+        cursorShape: Qt.ArrowCursor
+        preventStealing: true
+        onClicked: (mouse) => {
+            mouse.accepted = true;
+        }
+    }
+
     // App color helper
     function getAppColor(name, sum, body) {
         let n = ((name || "") + " " + (sum || "") + " " + (body || "")).toLowerCase();
@@ -145,22 +155,27 @@ Rectangle {
                     radius: 9
                     antialiasing: true
                     color: root.isPinned ? Qt.rgba(245, 166, 35, 0.20)
-                         : (pinHover.hovered ? Qt.rgba(255, 255, 255, 0.15) : "transparent")
+                         : (pinMouse.containsMouse ? Qt.rgba(255, 255, 255, 0.15) : "transparent")
 
                     Text {
                         anchors.centerIn: parent
                         text: "󰤱"
                         font.family: Theme.iconFontFamily
                         font.pixelSize: 10
-                        color: root.isPinned ? Theme.pinActive : (pinHover.hovered ? "#ffffff" : Theme.appleHeaderMuted)
+                        color: root.isPinned ? Theme.pinActive : (pinMouse.containsMouse ? "#ffffff" : Theme.appleHeaderMuted)
                         renderType: Text.NativeRendering
                     }
 
-                    HoverHandler { id: pinHover; cursorShape: Qt.PointingHandCursor }
-                    TapHandler {
-                        gesturePolicy: TapHandler.ReleaseWithinBounds
-                        grabPermissions: PointerHandler.CanTakeOverFromItems | PointerHandler.CanTakeOverFromHandlersOfSameType | PointerHandler.ApprovesTakeOverByNothing
-                        onTapped: root.pinClicked()
+                    MouseArea {
+                        id: pinMouse
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        preventStealing: true
+                        onClicked: (mouse) => {
+                            mouse.accepted = true;
+                            root.pinClicked();
+                        }
                     }
                 }
 
@@ -171,7 +186,7 @@ Rectangle {
                     height: 18
                     radius: 9
                     antialiasing: true
-                    color: closeHover.hovered ? Qt.rgba(255, 55, 95, 0.25) : "transparent"
+                    color: closeMouse.containsMouse ? Qt.rgba(255, 55, 95, 0.25) : "transparent"
 
                     Text {
                         anchors.centerIn: parent
@@ -179,15 +194,20 @@ Rectangle {
                         font.family: Theme.fontFamily
                         font.pixelSize: 9
                         font.bold: true
-                        color: closeHover.hovered ? Theme.accentRed : Theme.appleHeaderMuted
+                        color: closeMouse.containsMouse ? Theme.accentRed : Theme.appleHeaderMuted
                         renderType: Text.NativeRendering
                     }
 
-                    HoverHandler { id: closeHover; cursorShape: Qt.PointingHandCursor }
-                    TapHandler {
-                        gesturePolicy: TapHandler.ReleaseWithinBounds
-                        grabPermissions: PointerHandler.CanTakeOverFromItems | PointerHandler.CanTakeOverFromHandlersOfSameType | PointerHandler.ApprovesTakeOverByNothing
-                        onTapped: root.dismissClicked()
+                    MouseArea {
+                        id: closeMouse
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        preventStealing: true
+                        onClicked: (mouse) => {
+                            mouse.accepted = true;
+                            root.dismissClicked();
+                        }
                     }
                 }
             }

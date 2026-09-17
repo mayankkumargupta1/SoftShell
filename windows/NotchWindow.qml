@@ -261,19 +261,6 @@ PanelWindow {
             anchors.fill: parent
             z: 10
 
-            // Transparent blocking MouseArea: sits below all child buttons (z: -1 within this item).
-            // Ensures that any click reaching this layer does NOT propagate to backgroundClickArea.
-            // The background expand/collapse is handled via backgroundClickArea's z: 0 areas
-            // that are NOT covered by interactive content.
-            MouseArea {
-                anchors.fill: parent
-                z: -1
-                // Accept the event but do nothing — prevents bubbling to backgroundClickArea
-                // for regions covered by interactive content.
-                propagateComposedEvents: false
-                onClicked: (mouse) => { mouse.accepted = true; }
-                onPressed: (mouse) => { mouse.accepted = true; }
-            }
         // 1. COLLAPSED VIEW (Height 36px)
         Item {
             id: collapsedContainer

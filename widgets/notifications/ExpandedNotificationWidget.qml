@@ -97,8 +97,8 @@ Item {
                 height: 18
                 radius: 5
                 antialiasing: true
-                color: simTap.pressed ? Qt.rgba(255, 255, 255, 0.2)
-                     : (simHover.hovered ? Qt.rgba(255, 255, 255, 0.12) : Qt.rgba(255, 255, 255, 0.06))
+                color: simMouse.pressed ? Qt.rgba(255, 255, 255, 0.2)
+                     : (simMouse.containsMouse ? Qt.rgba(255, 255, 255, 0.12) : Qt.rgba(255, 255, 255, 0.06))
 
                 Text {
                     id: simText
@@ -110,14 +110,16 @@ Item {
                     renderType: Text.NativeRendering
                 }
 
-                HoverHandler { id: simHover; cursorShape: Qt.PointingHandCursor }
-                TapHandler {
-                    id: simTap
-                    gesturePolicy: TapHandler.ReleaseWithinBounds
-                    grabPermissions: PointerHandler.CanTakeOverFromItems | PointerHandler.CanTakeOverFromHandlersOfSameType | PointerHandler.ApprovesTakeOverByNothing
-                    onTapped: {
+                MouseArea {
+                    id: simMouse
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    preventStealing: true
+                    onClicked: (mouse) => {
+                        mouse.accepted = true;
                         if (root.notifService) {
-                            root.notifService.emitTestNotification()
+                            root.notifService.emitTestNotification();
                         }
                     }
                 }
@@ -156,8 +158,8 @@ Item {
                 radius: 6
                 antialiasing: true
                 visible: root.totalCount > 0
-                color: clearTap.pressed ? Qt.rgba(255, 255, 255, 0.22)
-                     : (clearHover.hovered ? Qt.rgba(255, 255, 255, 0.14) : Qt.rgba(255, 255, 255, 0.08))
+                color: clearMouse.pressed ? Qt.rgba(255, 255, 255, 0.22)
+                     : (clearMouse.containsMouse ? Qt.rgba(255, 255, 255, 0.14) : Qt.rgba(255, 255, 255, 0.08))
                 border.width: 1
                 border.color: Qt.rgba(255, 255, 255, 0.12)
 
@@ -173,23 +175,21 @@ Item {
                         font.family: Theme.fontFamily
                         font.pixelSize: 10
                         font.bold: true
-                        color: clearHover.hovered ? "#ffffff" : Theme.appleSubtext
+                        color: clearMouse.containsMouse ? "#ffffff" : Theme.appleSubtext
                         renderType: Text.NativeRendering
                     }
                 }
 
-                HoverHandler {
-                    id: clearHover
+                MouseArea {
+                    id: clearMouse
+                    anchors.fill: parent
+                    hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
-                }
-
-                TapHandler {
-                    id: clearTap
-                    gesturePolicy: TapHandler.ReleaseWithinBounds
-                    grabPermissions: PointerHandler.CanTakeOverFromItems | PointerHandler.CanTakeOverFromHandlersOfSameType | PointerHandler.ApprovesTakeOverByNothing
-                    onTapped: {
+                    preventStealing: true
+                    onClicked: (mouse) => {
+                        mouse.accepted = true;
                         if (root.notifService) {
-                            root.notifService.clearAllUnpinned()
+                            root.notifService.clearAllUnpinned();
                         }
                     }
                 }
