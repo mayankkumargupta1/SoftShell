@@ -6,7 +6,7 @@ Item {
     id: root
 
     property string title: ""
-    property string description: "Your Mac will automatically choose the best level of performance and energy usage."
+    property string description: "SoftShell will automatically choose the best level of performance and energy usage."
     property string currentProfile: "balanced"
     property bool openUpwards: false
     property bool isMenuOpen: false

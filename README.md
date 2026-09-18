@@ -1,17 +1,17 @@
-# SoftShell 
+# SoftShell
 
-A pixel-refined, macOS-inspired desktop environment layer for **Hyprland** built with **Quickshell** and **QML**.
+A pixel-refined desktop environment layer for **Hyprland** built with **Quickshell** and **QML**.
 
-Features an authentic Apple Dynamic Island, translucent frosted glass Menu Bar, Spotlight app launcher, live media visualizer, and clipboard popover.
+Features an authentic Dynamic Island, translucent frosted glass Menu Bar, application launcher, live media visualizer, and clipboard popover.
 
 ---
 
 ## Features
 
-- **Apple Menu Bar**:
-  - Translucent frosted glass material (`Sonoma / Sequoia` aesthetic) with Hyprland layer blur.
-  - Left: Apple menu logo ``, active application title in bold, standard menu bar items (`File`, `Edit`, `View`, `Go`, `Tools`, `Window`, `Help`).
-  - Right: macOS-accurate status icons — Battery pill with dynamic fill level, 3-arc Wi-Fi signal glyph, and double-toggle Control Center switch (`SF Symbol switch.2`).
+- **SoftShell Menu Bar**:
+  - Translucent frosted glass material with Hyprland layer blur.
+  - Left: SoftShell logo, active application title in bold, standard menu bar items (`File`, `Edit`, `View`, `Go`, `Tools`, `Window`, `Help`).
+  - Right: SoftShell status icons — Battery pill with dynamic fill level, 3-arc Wi-Fi signal glyph, and double-toggle Control Center switch (`SF Symbol switch.2`).
   - Safe central cutout reserved for the Dynamic Island.
 - **Dynamic Island (Top Overlay)**:
   - AMOLED pitch-black pill smoothly animating between collapsed, expanded, media, and notification states.
@@ -19,8 +19,8 @@ Features an authentic Apple Dynamic Island, translucent frosted glass Menu Bar, 
   - Interactive music visualizer, Spotify / MPRIS controls, and vinyl playback animation.
   - Notification banner integration with queue counter and quick dismissal.
   - Visual clipboard copy animation response.
-- **Spotlight Launcher**:
-  - Apple Spotlight / Raycast aesthetic with frosted glass, squircle icons, keyboard navigation, and fuzzy desktop app search.
+- **App Launcher**:
+  - SoftShell launcher aesthetic with frosted glass, squircle icons, keyboard navigation, and fuzzy desktop app search.
   - Toggled with `Super + A` or `Super + D`.
 
 ---
@@ -56,7 +56,7 @@ chmod +x install.sh
 
 | Keybinding | Action |
 |---|---|
-| `Super + A` / `Super + D` | Toggle Spotlight Launcher |
+| `Super + A` / `Super + D` | Toggle App Launcher |
 | `Super + R` | Reload SoftShell (`quickshell`) |
 | `Super + Space` | Play / Pause active media |
 | `Print` | Interactive area screenshot to clipboard (`grim + slurp`) |
@@ -79,11 +79,11 @@ All components follow strict modular single-responsibility design guidelines:
 │   ├── mpris/                  # Media player controller and visualizer
 │   ├── notifications/          # Compact banners and expanded cards
 │   ├── clipboard/              # Clipboard response widget
-│   └── launcher/               # Spotlight app launcher
+│   └── launcher/               # App launcher
 ├── windows/                    # Top-level window / surface definitions
 │   ├── BarWindow.qml           # Top menu bar panel
 │   ├── NotchWindow.qml         # Dynamic island overlay
-│   └── LauncherWindow.qml      # Spotlight launcher surface
+│   └── LauncherWindow.qml      # App launcher surface
 └── services/                   # Background polling and data providers
 ```
 

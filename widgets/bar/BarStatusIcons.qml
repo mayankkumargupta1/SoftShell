@@ -4,7 +4,7 @@ import "../../theme"
 import "../../services"
 import "../battery"
 
-// BarStatusIcons — Apple macOS right-side menu bar items:
+// BarStatusIcons — SoftShell right-side menu bar items:
 // 1. Battery | 2. Wi-Fi | 3. Control Center
 Item {
     id: root
@@ -81,7 +81,7 @@ Item {
             }
         }
 
-        // 3. Control Center Icon (macOS 2-toggle sliders)
+        // 3. Control Center Icon (SoftShell 2-toggle sliders)
         Item {
             anchors.verticalCenter: parent.verticalCenter
             width: 26
@@ -94,7 +94,7 @@ Item {
                 Behavior on color { ColorAnimation { duration: 100 } }
             }
 
-            // Apple macOS Control Center Capsule Toggles (matching SF Symbol switch.2)
+            // SoftShell Control Center Capsule Toggles (matching SF Symbol switch.2)
             Item {
                 anchors.centerIn: parent
                 width: 16

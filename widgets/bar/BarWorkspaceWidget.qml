@@ -3,7 +3,7 @@ import Quickshell
 import Quickshell.Hyprland
 import "../../theme"
 
-// BarWorkspaceWidget — macOS Mission Control style workspace pill dots.
+// BarWorkspaceWidget — SoftShell style workspace pill dots.
 // Uses Hyprland.workspaces live model; clicking switches workspace.
 Item {
     id: root

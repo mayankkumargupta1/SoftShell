@@ -2,7 +2,7 @@ import QtQuick 2.15
 import "../../theme"
 import "../../services"
 
-// SleepTimerSelector — Adjust display sleep and brightness dimming timeouts (macOS style)
+// SleepTimerSelector — Adjust display sleep and brightness dimming timeouts (SoftShell style)
 Column {
     id: root
 
@@ -132,7 +132,7 @@ Column {
             }
         }
 
-        // macOS Green Capsule Switch
+        // SoftShell Green Capsule Switch
         Rectangle {
             id: toggleSwitch
             anchors.right: parent.right

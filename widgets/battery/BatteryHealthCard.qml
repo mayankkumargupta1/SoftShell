@@ -2,7 +2,7 @@ import QtQuick 2.15
 import "../../theme"
 import "../../services"
 
-// BatteryHealthCard — Detailed macOS Battery Health & Diagnostics Card
+// BatteryHealthCard — Detailed SoftShell Battery Health & Diagnostics Card
 Rectangle {
     id: root
 
@@ -51,7 +51,7 @@ Rectangle {
                 }
             }
 
-            // macOS Condition Badge ("Normal")
+            // SoftShell Condition Badge ("Normal")
             Rectangle {
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter

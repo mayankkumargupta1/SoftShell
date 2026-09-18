@@ -3,6 +3,7 @@
 This document provides instructions, architectural rules, and coding standards for developing desktop shells, widgets, and overlays using **Quickshell** and **QML**.
 
 DONT FUCKING FORGET TO UPDATE THE INSTALL SCRIPT WHEN NECESSARY
+DONT MENTION MACOS INSTEAD MENTION SOFTSHELL THOUGH IT IS INSPIRED FROM MACOS
 ---
 
 ## 1. Core Mandate: Component Decomposition & Modularization

@@ -96,7 +96,7 @@ Item {
             }
         }
 
-        // Subtle Apple Frosted Hairline Divider
+        // Subtle SoftShell Frosted Hairline Divider
         Rectangle {
             width: parent.width - 12
             anchors.horizontalCenter: parent.horizontalCenter

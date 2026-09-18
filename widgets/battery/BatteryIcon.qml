@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import "../../theme"
 
-// BatteryIcon — Authentic Apple macOS Battery Glyph with dynamic level & state colors
+// BatteryIcon — Authentic SoftShell Battery Glyph with dynamic level & state colors
 Item {
     id: root
 
@@ -11,7 +11,7 @@ Item {
     implicitWidth: 25
     implicitHeight: 12
 
-    // Dynamic fill color according to user requirements & macOS HIG:
+    // Dynamic fill color according to user requirements & SoftShell HIG:
     // - Below 20%: Red (#ff453a)
     // - Below 40%: Yellow (#ffd60a)
     // - Charging: Green (#30d158)

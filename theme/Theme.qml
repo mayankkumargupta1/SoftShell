@@ -34,7 +34,7 @@ QtObject {
     // Clipboard Response Geometry
     readonly property int notchClipboardWidth: 290
 
-    // Notification Geometry & Timing (macOS Big Sur & iOS Standard)
+    // Notification Geometry & Timing (SoftShell Standard)
     readonly property int notchNotificationCollapsedWidth: 480
     readonly property int notchNotificationCollapsedHeight: 52
     readonly property int notchExpandedWithNotifsWidth: 600
@@ -42,7 +42,7 @@ QtObject {
     readonly property int notifSingleDuration: 7000
     readonly property int notifQueuedDuration: 4000
 
-    // macOS Frosted Glass & Notification Tokens
+    // SoftShell Frosted Glass & Notification Tokens
     readonly property color cardBg: Qt.rgba(255, 255, 255, 0.08)
     readonly property color cardHover: Qt.rgba(255, 255, 255, 0.13)
     readonly property color cardBorder: Qt.rgba(255, 255, 255, 0.12)
@@ -72,7 +72,7 @@ QtObject {
     readonly property int fontSizeLarge: 18
     readonly property int fontSizeClockLarge: 26
 
-    // --- Launcher Tokens (Apple Spotlight Dimensions) ---
+    // --- Launcher Tokens (SoftShell Dimensions) ---
     readonly property int launcherWidth: 480
     readonly property int launcherMaxHeight: 400
     readonly property int launcherItemHeight: 46
@@ -86,7 +86,7 @@ QtObject {
     readonly property color launcherInputBorder: Qt.rgba(255, 255, 255, 0.12)
     readonly property color launcherScrimBg: Qt.rgba(0, 0, 0, 0.45)
 
-    // --- Menu Bar Tokens (Modern macOS Sonoma / Sequoia borderless glass) ---
+    // --- Menu Bar Tokens (Modern SoftShell borderless glass) ---
     readonly property int barHeight: 32
     readonly property color barBgTop: Qt.rgba(255, 255, 255, 0.12)
     readonly property color barBgBottom: Qt.rgba(255, 255, 255, 0.04)
@@ -99,16 +99,16 @@ QtObject {
     // Safe center gap wider than the widest notification pill (480px)
     readonly property int barIslandGap: 500
 
-    // --- System Stats Accent Colors (Apple HIG traffic-light style) ---
+    // --- System Stats Accent Colors (SoftShell traffic-light style) ---
     readonly property color statGreen: "#34c759"
     readonly property color statYellow: "#ff9f0a"
     readonly property color statRed: "#ff3b30"
 
-    // --- Battery & Power Management Tokens (Apple macOS HIG / Pure AMOLED) ---
+    // --- Battery & Power Management Tokens (SoftShell HIG / Pure AMOLED) ---
     readonly property color batteryNormal: "#ffffff"
-    readonly property color batteryCharging: "#30d158"   // Apple HIG vibrant green
-    readonly property color batteryLow: "#ffd60a"        // Apple HIG amber yellow (below 40%)
-    readonly property color batteryCritical: "#ff453a"   // Apple HIG red (below 20%)
+    readonly property color batteryCharging: "#30d158"   // SoftShell HIG vibrant green
+    readonly property color batteryLow: "#ffd60a"        // SoftShell HIG amber yellow (below 40%)
+    readonly property color batteryCritical: "#ff453a"   // SoftShell HIG red (below 20%)
     readonly property color popoverBg: "#000000"          // 100% Opaque Pure AMOLED Black
     readonly property color popoverCardBg: "#161618"      // 100% Opaque Dark Surface
     readonly property color popoverBorder: Qt.rgba(255, 255, 255, 0.16)

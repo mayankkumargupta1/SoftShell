@@ -89,7 +89,7 @@ Rectangle {
         anchors.bottomMargin: 9
         spacing: 4
 
-        // --- 1. macOS Header Row: Micro Icon + All-Caps App Name ... Timestamp + Actions ---
+        // --- 1. SoftShell Header Row: Micro Icon + All-Caps App Name ... Timestamp + Actions ---
         Item {
             width: parent.width
             height: 16
@@ -179,7 +179,7 @@ Rectangle {
                     }
                 }
 
-                // Close Button Circle (macOS style)
+                // Close Button Circle (SoftShell style)
                 Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
                     width: 18

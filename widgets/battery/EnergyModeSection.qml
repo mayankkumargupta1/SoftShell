@@ -40,7 +40,7 @@ Rectangle {
             Text {
                 width: parent.width
                 wrapMode: Text.WordWrap
-                text: "Your Mac can optimise either its battery usage with Low Power Mode or its performance in resource-intensive tasks with High Power Mode."
+                text: "SoftShell can optimise either its battery usage with Low Power Mode or its performance in resource-intensive tasks with High Power Mode."
                 font.family: Theme.fontFamily
                 font.pixelSize: 11
                 color: Theme.textSecondary

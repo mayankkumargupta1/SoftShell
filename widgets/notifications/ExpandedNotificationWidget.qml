@@ -150,7 +150,7 @@ Item {
                 renderType: Text.NativeRendering
             }
 
-            // "Clear All" Button (macOS frosted pill)
+            // "Clear All" Button (SoftShell frosted pill)
             Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 width: clearContent.implicitWidth + 14

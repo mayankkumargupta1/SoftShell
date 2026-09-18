@@ -3,7 +3,7 @@ import Quickshell
 import "../../theme"
 import "../../services"
 
-// BatteryCompactView — The compact macOS Sonoma battery popover view
+// BatteryCompactView — The compact SoftShell battery popover view
 Item {
     id: root
 
@@ -97,7 +97,7 @@ Item {
         }
 
         // -------------------------------------------------------------------
-        // 2. Section: Apps Using Significant Energy (macOS Style)
+        // 2. Section: Apps Using Significant Energy (SoftShell Style)
         // -------------------------------------------------------------------
         SignificantEnergyList {
             width: parent.width

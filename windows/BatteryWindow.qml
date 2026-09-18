@@ -7,7 +7,7 @@ import "../services"
 import "../widgets/battery"
 import "../theme"
 
-// BatteryWindow — Overlay PanelWindow displaying the macOS Battery Dropdown Popover
+// BatteryWindow — Overlay PanelWindow displaying the SoftShell Battery Dropdown Popover
 PanelWindow {
     id: root
 

@@ -2,7 +2,7 @@ import QtQuick 2.15
 import "../../theme"
 import "../../services"
 
-// BatteryHealthHeader — Section 1: Health status pill card matching macOS design
+// BatteryHealthHeader — Section 1: Health status pill card matching SoftShell design
 Rectangle {
     id: root
 

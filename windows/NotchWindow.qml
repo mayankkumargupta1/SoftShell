@@ -364,7 +364,7 @@ PanelWindow {
                     }
                 }
 
-                // Tier 2: Apple-Standard Paginated Notification Center
+                // Tier 2: SoftShell Paginated Notification Center
                 ExpandedNotificationWidget {
                     notifService: notifService
                     anchors.top: tier1.bottom
@@ -405,7 +405,7 @@ PanelWindow {
                         anchors.verticalCenter: parent.verticalCenter
                     }
 
-                    // Right Side: Apple-Standard Music Player with Controls
+                    // Right Side: SoftShell Music Player with Controls
                     ExpandedMusicWidget {
                         media: mediaService
                         anchors.right: parent.right

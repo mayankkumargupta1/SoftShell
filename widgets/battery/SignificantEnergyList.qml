@@ -2,7 +2,7 @@ import QtQuick 2.15
 import Quickshell
 import "../../theme"
 
-// SignificantEnergyList — macOS list of apps consuming high energy
+// SignificantEnergyList — SoftShell list of apps consuming high energy
 Column {
     id: root
 

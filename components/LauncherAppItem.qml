@@ -14,7 +14,7 @@ Item {
     implicitWidth: parent ? parent.width : (Theme.launcherWidth - (Theme.launcherFillet * 2) - 20)
     implicitHeight: Theme.launcherItemHeight
 
-    // Active / Hover Apple Background Pill
+    // Active / Hover SoftShell Background Pill
     Rectangle {
         id: bg
         anchors.fill: parent
@@ -33,7 +33,7 @@ Item {
             ColorAnimation { duration: 120 }
         }
 
-        // Apple Blue vertical accent pill on selected item
+        // SoftShell Blue vertical accent pill on selected item
         Rectangle {
             anchors.left: parent.left
             anchors.leftMargin: 3
@@ -58,7 +58,7 @@ Item {
             NumberAnimation { duration: 120; easing.type: Easing.OutCubic }
         }
 
-        // App Icon Container (Apple Squircle)
+        // App Icon Container (SoftShell Squircle)
         Rectangle {
             id: iconBox
             width: 32
@@ -119,7 +119,7 @@ Item {
             }
         }
 
-        // Right-aligned Keycap Action Pill (Apple / Raycast style)
+        // Right-aligned Keycap Action Pill (SoftShell style)
         Row {
             visible: root.isSelected
             anchors.verticalCenter: parent.verticalCenter

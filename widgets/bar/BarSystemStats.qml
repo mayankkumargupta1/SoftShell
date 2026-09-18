@@ -12,7 +12,7 @@ Item {
     implicitWidth: statsRow.implicitWidth
     implicitHeight: Theme.barHeight
 
-    // Color helpers — Apple monochrome by default, amber/red only under heavy load
+    // Color helpers — SoftShell monochrome by default, amber/red only under heavy load
     function cpuColor() {
         if (!stats) return Theme.barText;
         if (stats.cpuPercent >= 90) return Theme.statRed;

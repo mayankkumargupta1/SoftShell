@@ -2,7 +2,7 @@ import QtQuick 2.15
 import "../../theme"
 import "../../services"
 
-// PowerModeSelector — macOS Segmented Control for Performance / Balanced / Low Power
+// PowerModeSelector — SoftShell Segmented Control for Performance / Balanced / Low Power
 Item {
     id: root
 

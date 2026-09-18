@@ -3,8 +3,8 @@ import Quickshell
 import Quickshell.Hyprland
 import "../../theme"
 
-// BarAppMenu — Apple macOS left-side menu bar items:
-//  Apple logo | Active App Name (bold) | File | Edit | View | Go | Tools | Window | Help
+// BarAppMenu — SoftShell left-side menu bar items:
+// SoftShell logo | Active App Name (bold) | File | Edit | View | Go | Tools | Window | Help
 Item {
     id: root
 
@@ -47,7 +47,7 @@ Item {
                 Behavior on color { ColorAnimation { duration: 100 } }
             }
 
-            // Subtle 1px drop shadow matching macOS Text.Raised styling
+            // Subtle 1px drop shadow matching SoftShell Text.Raised styling
             Image {
                 anchors.centerIn: parent
                 anchors.verticalCenterOffset: 1

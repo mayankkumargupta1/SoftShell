@@ -14,7 +14,7 @@ Item {
     readonly property var currentNotif: notifService ? notifService.activeBanner : null
     readonly property int queueCount: notifService ? notifService.bannerQueueCount : 0
 
-    // Authentic Apple app colors & Web App detection
+    // Authentic SoftShell app colors & Web App detection
     function getAppColor(appName, summary, body) {
         let text = ((appName || "") + " " + (summary || "") + " " + (body || "")).toLowerCase();
         if (text.indexOf("whatsapp") !== -1) return "#25d366";
@@ -114,7 +114,7 @@ Item {
             }
         }
 
-        // Apple Squircle App Icon Badge (34x34 with 9px radius)
+        // SoftShell Squircle App Icon Badge (34x34 with 9px radius)
         Rectangle {
             id: appIconBadge
             anchors.verticalCenter: parent.verticalCenter

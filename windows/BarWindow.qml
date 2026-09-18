@@ -7,7 +7,7 @@ import "../theme"
 import "../services"
 import "../widgets/bar"
 
-// BarWindow — macOS-style thin white menu bar.
+// BarWindow — SoftShell thin menu bar.
 // Layer: Top (below Overlay, so the dynamic island floats above it).
 // exclusiveZone: barHeight — pushes all desktop windows down by 28px.
 PanelWindow {
@@ -42,7 +42,7 @@ PanelWindow {
         id: wallpaperService
     }
 
-    // --- Bar Background (Pure borderless modern macOS translucent glass) ---
+    // --- Bar Background (Pure borderless modern SoftShell translucent glass) ---
     Rectangle {
         id: barBg
         anchors.fill: parent
@@ -58,7 +58,7 @@ PanelWindow {
         anchors.leftMargin:  20
         anchors.rightMargin: 20
 
-        // LEFT: Apple logo | App Name | File | Edit | View | Go | Tools | Window | Help
+        // LEFT: SoftShell logo | App Name | File | Edit | View | Go | Tools | Window | Help
         BarAppMenu {
             id: appMenu
             anchors.left:           parent.left

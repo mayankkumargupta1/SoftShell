@@ -57,7 +57,7 @@ Item {
             }
         }
 
-        // 3. Apple Glassmorphic Playback Control Buttons
+        // 3. SoftShell Glassmorphic Playback Control Buttons
         Row {
             anchors.verticalCenter: parent.verticalCenter
             spacing: 5

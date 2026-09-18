@@ -22,7 +22,7 @@ Item {
         anchors.rightMargin: 20
         height: 18
 
-        // Left indicators (e.g. screen share / lock indicator like macOS)
+        // Left indicators (e.g. screen share / lock indicator like SoftShell)
         Row {
             anchors.left: parent.left
             anchors.verticalCenter: parent.verticalCenter
@@ -131,7 +131,7 @@ Item {
                 }
             }
 
-            // Mini Apple Music Red Badge at bottom-right corner
+            // Mini Music Red Badge at bottom-right corner
             Rectangle {
                 id: musicBadge
                 width: 20

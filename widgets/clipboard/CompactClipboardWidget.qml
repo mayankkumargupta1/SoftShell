@@ -36,7 +36,7 @@ Item {
         anchors.centerIn: parent
         spacing: 9
 
-        // 1. Apple Glowing Emerald Badge with Pop Animation
+        // 1. SoftShell Glowing Emerald Badge with Pop Animation
         Rectangle {
             id: iconBadge
             anchors.verticalCenter: parent.verticalCenter

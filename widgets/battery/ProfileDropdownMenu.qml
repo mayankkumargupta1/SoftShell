@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import "../../theme"
 
-// ProfileDropdownMenu — macOS-style popover selector with checkmark
+// ProfileDropdownMenu — SoftShell-style popover selector with checkmark
 Rectangle {
     id: root
 

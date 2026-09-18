@@ -2,7 +2,7 @@
 # ==============================================================================
 # SoftShell Installer & Hyprland Integration Script
 # ==============================================================================
-# Deploys SoftShell (Apple Dynamic Island & Launcher) to ~/.config/quickshell
+# Deploys SoftShell (Dynamic Island & Launcher) to ~/.config/quickshell
 # and integrates it seamlessly with Hyprland on Arch Linux.
 # ==============================================================================
 
@@ -46,7 +46,7 @@ banner() {
     echo " / __| ___  / _|| |_  / ___|| |__   ___ | || |"
     echo " \__ \/ _ \| |_ | __| \___ \| '_ \ / _ \| || |"
     echo " |___/\___/|_|   \__| |____/|_| |_|\___/|_||_|"
-    echo -e "       Apple Dynamic Island & Launcher for Wayland${NC}\n"
+    echo -e "       Dynamic Island & Launcher for Wayland${NC}\n"
 }
 
 # ------------------------------------------------------------------------------
@@ -310,7 +310,7 @@ EOF
         if ! grep -q "quickshell:bar" "$SETTINGS_FILE"; then
             cat << 'EOF' >> "$SETTINGS_FILE"
 
--- SoftShell Menu Bar blur rules (macOS frosted glass vibrancy)
+-- SoftShell Menu Bar blur rules (SoftShell frosted glass vibrancy)
 hl.layer_rule({ "blur", "quickshell:bar" })
 hl.layer_rule({ "ignorealpha 0.1", "quickshell:bar" })
 EOF
@@ -388,7 +388,7 @@ main() {
     echo -e "${GREEN}${BOLD} SoftShell Installation Finished Successfully!        ${NC}"
     echo -e "${GREEN}${BOLD}======================================================${NC}"
     echo -e "• Dynamic Island Notch: Active at top of monitor"
-    echo -e "• macOS Menu Bar: Thin translucent frosted glass with Apple controls"
+    echo -e "• SoftShell Menu Bar: Thin translucent frosted glass with desktop controls"
     echo -e "• Launcher: Press ${CYAN}Super + A${NC} or ${CYAN}Super + D${NC} to toggle"
     echo -e "• Shell Config Directory: ${CYAN}~/.config/quickshell${NC}"
     echo -e "• Rollback Available: ${CYAN}$CURRENT_BACKUP_DIR/rollback.sh${NC}\n"
