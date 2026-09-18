@@ -104,6 +104,18 @@ QtObject {
     readonly property color statYellow: "#ff9f0a"
     readonly property color statRed: "#ff3b30"
 
+    // --- Battery & Power Management Tokens (Apple macOS HIG / Pure AMOLED) ---
+    readonly property color batteryNormal: "#ffffff"
+    readonly property color batteryCharging: "#30d158"   // Apple HIG vibrant green
+    readonly property color batteryLow: "#ffd60a"        // Apple HIG amber yellow (below 40%)
+    readonly property color batteryCritical: "#ff453a"   // Apple HIG red (below 20%)
+    readonly property color popoverBg: "#000000"          // 100% Opaque Pure AMOLED Black
+    readonly property color popoverCardBg: "#161618"      // 100% Opaque Dark Surface
+    readonly property color popoverBorder: Qt.rgba(255, 255, 255, 0.16)
+    readonly property color popoverSeparator: Qt.rgba(255, 255, 255, 0.12)
+    readonly property real popoverRadius: 16.0
+    readonly property int popoverWidth: 320
+
     // --- Additional animation constants ---
     readonly property int animFast: 120
     readonly property int animMedium: 200

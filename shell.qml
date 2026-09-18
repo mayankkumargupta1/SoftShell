@@ -6,4 +6,5 @@ Scope {
     BarWindow {}
     NotchWindow {}
     LauncherWindow {}
+    BatteryWindow {}
 }

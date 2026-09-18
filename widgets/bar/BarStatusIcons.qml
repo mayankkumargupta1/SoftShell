@@ -1,6 +1,8 @@
 import QtQuick 2.15
+import Quickshell
 import "../../theme"
 import "../../services"
+import "../battery"
 
 // BarStatusIcons — Apple macOS right-side menu bar items:
 // 1. Battery | 2. Wi-Fi | 3. Control Center
@@ -17,7 +19,7 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         spacing: 14
 
-        // 1. Battery Icon
+        // 1. Battery Icon (Dynamic colors: <40% yellow, <20% red, charging green)
         Item {
             anchors.verticalCenter: parent.verticalCenter
             width: 32
@@ -26,64 +28,26 @@ Item {
             Rectangle {
                 anchors.fill: parent
                 radius: 4
-                color: batHover.hovered ? Theme.barItemHover : "transparent"
+                color: (batTap.pressed || batHover.hovered) ? Theme.barItemHover : "transparent"
                 Behavior on color { ColorAnimation { duration: 100 } }
             }
 
-            // Apple macOS Battery Pill
-            Item {
+            BatteryIcon {
                 anchors.centerIn: parent
-                width: 25
-                height: 12
-
-                // Battery Body Outline
-                Rectangle {
-                    id: batOutline
-                    anchors.left: parent.left
-                    anchors.verticalCenter: parent.verticalCenter
-                    width: 22
-                    height: 11
-                    radius: 3
-                    color: "transparent"
-                    border.color: Theme.barText
-                    border.width: 1
-                    antialiasing: true
-
-                    // Battery Fill Level
-                    Rectangle {
-                        anchors.left: parent.left
-                        anchors.leftMargin: 2
-                        anchors.top: parent.top
-                        anchors.topMargin: 2
-                        anchors.bottom: parent.bottom
-                        anchors.bottomMargin: 2
-                        // Dynamic width based on stats percentage (fallback to 85%)
-                        width: {
-                            let pct = (root.stats && root.stats.batteryPercent > 0) ? root.stats.batteryPercent : 85;
-                            return Math.max(2, Math.round((parent.width - 4) * (pct / 100.0)));
-                        }
-                        radius: 1.5
-                        color: Theme.barText
-                        antialiasing: true
-                    }
-                }
-
-                // Positive Terminal Nub
-                Rectangle {
-                    anchors.left: batOutline.right
-                    anchors.leftMargin: 1
-                    anchors.verticalCenter: batOutline.verticalCenter
-                    width: 1.5
-                    height: 4.5
-                    radius: 0.75
-                    color: Theme.barText
-                    antialiasing: true
-                }
+                percentage: (root.stats && root.stats.batteryPercent > 0) ? root.stats.batteryPercent : 100
+                isCharging: root.stats ? root.stats.isCharging : false
             }
 
             HoverHandler {
                 id: batHover
                 cursorShape: Qt.PointingHandCursor
+            }
+
+            TapHandler {
+                id: batTap
+                onTapped: {
+                    Quickshell.execDetached(["quickshell", "ipc", "call", "battery", "toggle"]);
+                }
             }
         }
 

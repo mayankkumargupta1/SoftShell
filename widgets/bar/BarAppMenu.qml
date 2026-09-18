@@ -34,7 +34,7 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         spacing: 2
 
-        // 1. Apple Logo
+        // 1. SoftShell Logo
         Item {
             anchors.verticalCenter: parent.verticalCenter
             width: 26
@@ -43,28 +43,42 @@ Item {
             Rectangle {
                 anchors.fill: parent
                 radius: 4
-                color: (appleTap.pressed || appleHover.hovered) ? Theme.barItemHover : "transparent"
+                color: (logoTap.pressed || logoHover.hovered) ? Theme.barItemHover : "transparent"
                 Behavior on color { ColorAnimation { duration: 100 } }
             }
 
-            Text {
+            // Subtle 1px drop shadow matching macOS Text.Raised styling
+            Image {
                 anchors.centerIn: parent
-                text: "\uf179"
-                font.family: Theme.iconFontFamily
-                font.pixelSize: 14
-                color: Theme.barText
-                renderType: Text.NativeRendering
-                style: Text.Raised
-                styleColor: Qt.rgba(0, 0, 0, 0.40)
+                anchors.verticalCenterOffset: 1
+                width: 16
+                height: 16
+                source: Qt.resolvedUrl("../../assets/softshell_icon_shadow.png")
+                fillMode: Image.PreserveAspectFit
+                smooth: true
+                mipmap: true
+                opacity: 0.40
+            }
+
+            // Crisp white SoftShell logo
+            Image {
+                id: logoIcon
+                anchors.centerIn: parent
+                width: 16
+                height: 16
+                source: Qt.resolvedUrl("../../assets/softshell_icon.png")
+                fillMode: Image.PreserveAspectFit
+                smooth: true
+                mipmap: true
             }
 
             HoverHandler {
-                id: appleHover
+                id: logoHover
                 cursorShape: Qt.PointingHandCursor
             }
 
             TapHandler {
-                id: appleTap
+                id: logoTap
                 onTapped: {
                     Quickshell.execDetached(["quickshell", "ipc", "call", "launcher", "toggle"]);
                 }

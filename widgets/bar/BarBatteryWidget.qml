@@ -14,8 +14,9 @@ Item {
 
     function batteryColor() {
         if (!stats) return Theme.barText;
-        if (stats.isCharging) return Theme.statGreen;
-        if (stats.batteryPercent <= 20) return Theme.statRed;
+        if (stats.isCharging) return Theme.batteryCharging;
+        if (stats.batteryPercent <= 20) return Theme.batteryCritical;
+        if (stats.batteryPercent <= 40) return Theme.batteryLow;
         return Theme.barText;
     }
 

@@ -73,6 +73,8 @@ check_and_install_dependencies() {
         "grim"
         "slurp"
         "mpvpaper"
+        "upower"
+        "power-profiles-daemon"
         "ttf-jetbrains-mono-nerd"
     )
 
