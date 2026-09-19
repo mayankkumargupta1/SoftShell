@@ -8,8 +8,9 @@ Rectangle {
 
     property PowerService powerService: null
 
+    z: (batteryMenu.visible || adapterMenu.visible) ? 100 : 1
     implicitWidth: parent ? parent.width : 380
-    implicitHeight: contentCol.implicitHeight + 20
+    implicitHeight: Math.max(contentCol.implicitHeight + 24, 215)
     radius: 8
     color: "#161618"
     border.color: Theme.popoverBorder
@@ -61,13 +62,10 @@ Rectangle {
             id: batteryRow
             width: parent.width
             title: "On battery"
-            z: isMenuOpen ? 20 : 1
             currentProfile: root.powerService ? root.powerService.onBatteryProfile : "balanced"
-            onMenuToggled: {
-                if (isMenuOpen) adapterRow.closeMenu();
-            }
-            onProfileSelected: prof => {
-                if (root.powerService) root.powerService.setProfileMode("battery", prof);
+            onButtonClicked: {
+                adapterMenu.visible = false;
+                batteryMenu.visible = !batteryMenu.visible;
             }
         }
 
@@ -83,26 +81,54 @@ Rectangle {
             id: adapterRow
             width: parent.width
             title: "On power adapter"
-            openUpwards: true
-            z: isMenuOpen ? 20 : 1
             currentProfile: root.powerService ? root.powerService.onAcProfile : "performance"
-            onMenuToggled: {
-                if (isMenuOpen) batteryRow.closeMenu();
-            }
-            onProfileSelected: prof => {
-                if (root.powerService) root.powerService.setProfileMode("ac", prof);
+            onButtonClicked: {
+                batteryMenu.visible = false;
+                adapterMenu.visible = !adapterMenu.visible;
             }
         }
     }
 
-    // Dismiss open menus when tapping anywhere else in the section
+    // Dismiss open menus when tapping anywhere else in the popover
     MouseArea {
+        id: dismissArea
         anchors.fill: parent
-        z: 10
-        visible: batteryRow.isMenuOpen || adapterRow.isMenuOpen
+        anchors.margins: -500
+        z: 50
+        visible: batteryMenu.visible || adapterMenu.visible
         onClicked: {
-            batteryRow.closeMenu();
-            adapterRow.closeMenu();
+            batteryMenu.visible = false;
+            adapterMenu.visible = false;
+        }
+    }
+
+    // Dropdown for Row 1 (On battery) - opens downwards
+    ProfileDropdownMenu {
+        id: batteryMenu
+        visible: false
+        z: 100
+        anchors.right: parent.right
+        anchors.rightMargin: 12
+        y: contentCol.y + batteryRow.y + batteryRow.height + 2
+        currentProfile: root.powerService ? root.powerService.onBatteryProfile : "balanced"
+        onProfileSelected: prof => {
+            if (root.powerService) root.powerService.setProfileMode("battery", prof);
+            batteryMenu.visible = false;
+        }
+    }
+
+    // Dropdown for Row 2 (On power adapter) - opens upwards
+    ProfileDropdownMenu {
+        id: adapterMenu
+        visible: false
+        z: 100
+        anchors.right: parent.right
+        anchors.rightMargin: 12
+        y: contentCol.y + adapterRow.y - implicitHeight - 2
+        currentProfile: root.powerService ? root.powerService.onAcProfile : "performance"
+        onProfileSelected: prof => {
+            if (root.powerService) root.powerService.setProfileMode("ac", prof);
+            adapterMenu.visible = false;
         }
     }
 }

@@ -39,7 +39,7 @@ Rectangle {
                 Rectangle {
                     anchors.fill: parent
                     radius: 4
-                    color: itemHover.hovered ? "#007aff" : "transparent"
+                    color: itemArea.containsMouse ? "#007aff" : "transparent"
                     Behavior on color { ColorAnimation { duration: 80 } }
                 }
 
@@ -74,13 +74,12 @@ Rectangle {
                     }
                 }
 
-                HoverHandler {
-                    id: itemHover
+                MouseArea {
+                    id: itemArea
+                    anchors.fill: parent
+                    hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
-                }
-
-                TapHandler {
-                    onTapped: {
+                    onClicked: {
                         root.profileSelected(modelData.id);
                     }
                 }

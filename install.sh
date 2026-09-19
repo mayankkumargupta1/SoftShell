@@ -75,6 +75,7 @@ check_and_install_dependencies() {
         "mpvpaper"
         "upower"
         "power-profiles-daemon"
+        "networkmanager"
         "ttf-jetbrains-mono-nerd"
     )
 
@@ -310,9 +311,11 @@ EOF
         if ! grep -q "quickshell:bar" "$SETTINGS_FILE"; then
             cat << 'EOF' >> "$SETTINGS_FILE"
 
--- SoftShell Menu Bar blur rules (SoftShell frosted glass vibrancy)
+-- SoftShell Menu Bar & OSD blur rules (SoftShell frosted glass vibrancy)
 hl.layer_rule({ "blur", "quickshell:bar" })
 hl.layer_rule({ "ignorealpha 0.1", "quickshell:bar" })
+hl.layer_rule({ "blur", "quickshell:osd" })
+hl.layer_rule({ "ignorealpha 0.1", "quickshell:osd" })
 EOF
             success "Added layer rules to settings.lua."
         fi

@@ -8,14 +8,7 @@ Item {
     property string title: ""
     property string description: "SoftShell will automatically choose the best level of performance and energy usage."
     property string currentProfile: "balanced"
-    property bool openUpwards: false
-    property bool isMenuOpen: false
-    signal profileSelected(string profile)
-    signal menuToggled()
-
-    function closeMenu() {
-        isMenuOpen = false;
-    }
+    signal buttonClicked()
 
     function profileLabel(prof) {
         if (prof === "power-saver") return "Low Power";
@@ -61,7 +54,7 @@ Item {
         width: 104
         height: 24
         radius: 5
-        color: btnHover.hovered ? "#323236" : "#242428"
+        color: btnArea.containsMouse ? "#323236" : "#242428"
         border.color: Theme.popoverBorder
         border.width: 1
 
@@ -86,32 +79,12 @@ Item {
             }
         }
 
-        HoverHandler {
-            id: btnHover
+        MouseArea {
+            id: btnArea
+            anchors.fill: parent
+            hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
-        }
-
-        TapHandler {
-            onTapped: {
-                root.isMenuOpen = !root.isMenuOpen;
-                root.menuToggled();
-            }
-        }
-    }
-
-    ProfileDropdownMenu {
-        id: menu
-        visible: root.isMenuOpen
-        z: 100
-        anchors.top: root.openUpwards ? undefined : btn.bottom
-        anchors.topMargin: root.openUpwards ? 0 : 4
-        anchors.bottom: root.openUpwards ? btn.top : undefined
-        anchors.bottomMargin: root.openUpwards ? 4 : 0
-        anchors.right: btn.right
-        currentProfile: root.currentProfile
-        onProfileSelected: prof => {
-            root.profileSelected(prof);
-            root.isMenuOpen = false;
+            onClicked: root.buttonClicked()
         }
     }
 }

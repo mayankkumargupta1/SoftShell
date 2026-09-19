@@ -2,6 +2,7 @@ import QtQuick 2.15
 import Quickshell
 import "../../theme"
 import "../../services"
+import "../../services/popover"
 import "../battery"
 
 // BarStatusIcons — SoftShell right-side menu bar items:
@@ -28,7 +29,7 @@ Item {
             Rectangle {
                 anchors.fill: parent
                 radius: 4
-                color: (batTap.pressed || batHover.hovered) ? Theme.barItemHover : "transparent"
+                color: (batTap.pressed || batHover.hovered || PopoverManager.activePopover === "battery") ? Theme.barItemHover : "transparent"
                 Behavior on color { ColorAnimation { duration: 100 } }
             }
 
@@ -46,7 +47,7 @@ Item {
             TapHandler {
                 id: batTap
                 onTapped: {
-                    Quickshell.execDetached(["quickshell", "ipc", "call", "battery", "toggle"]);
+                    PopoverManager.toggle("battery");
                 }
             }
         }
@@ -60,7 +61,7 @@ Item {
             Rectangle {
                 anchors.fill: parent
                 radius: 4
-                color: wifiHover.hovered ? Theme.barItemHover : "transparent"
+                color: (wifiTap.pressed || wifiHover.hovered || PopoverManager.activePopover === "network") ? Theme.barItemHover : "transparent"
                 Behavior on color { ColorAnimation { duration: 100 } }
             }
 
@@ -79,6 +80,13 @@ Item {
                 id: wifiHover
                 cursorShape: Qt.PointingHandCursor
             }
+
+            TapHandler {
+                id: wifiTap
+                onTapped: {
+                    PopoverManager.toggle("network");
+                }
+            }
         }
 
         // 3. Control Center Icon (SoftShell 2-toggle sliders)
@@ -90,7 +98,7 @@ Item {
             Rectangle {
                 anchors.fill: parent
                 radius: 4
-                color: ccHover.hovered ? Theme.barItemHover : "transparent"
+                color: (ccTap.pressed || ccHover.hovered || PopoverManager.activePopover === "controlcenter") ? Theme.barItemHover : "transparent"
                 Behavior on color { ColorAnimation { duration: 100 } }
             }
 
@@ -163,6 +171,13 @@ Item {
             HoverHandler {
                 id: ccHover
                 cursorShape: Qt.PointingHandCursor
+            }
+
+            TapHandler {
+                id: ccTap
+                onTapped: {
+                    PopoverManager.toggle("controlcenter");
+                }
             }
         }
     }

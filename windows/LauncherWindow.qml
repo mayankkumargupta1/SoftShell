@@ -4,6 +4,7 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import Quickshell.Io
 import "../services"
+import "../services/popover"
 import "../widgets/launcher"
 import "../theme"
 
@@ -28,6 +29,7 @@ PanelWindow {
         id: launcherService
 
         onOpened: {
+            PopoverManager.closeAll();
             launcherWidget.clearInput();
             focusTimer.restart();
         }

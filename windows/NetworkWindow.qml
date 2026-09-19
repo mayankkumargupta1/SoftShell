@@ -5,20 +5,21 @@ import Quickshell.Hyprland
 import Quickshell.Io
 import "../services"
 import "../services/popover"
-import "../widgets/battery"
+import "../widgets/network"
 import "../theme"
 
-// BatteryWindow — Overlay PanelWindow displaying the SoftShell Battery Dropdown Popover
+// NetworkWindow — Overlay PanelWindow displaying the SoftShell Network Settings Popover
 PanelWindow {
     id: root
 
-    property bool isOpen: PopoverManager.activePopover === "battery"
+    property bool isOpen: PopoverManager.activePopover === "network"
 
     onIsOpenChanged: {
         if (isOpen) {
-            powerService.refreshStats();
+            networkService.refreshStatus();
+            networkService.scanNetworks();
         } else {
-            card.expanded = false;
+            card.reset();
         }
     }
 
@@ -30,38 +31,42 @@ PanelWindow {
     color: "transparent"
 
     WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.namespace: "quickshell:battery"
+    WlrLayershell.namespace: "quickshell:network"
 
     visible: isOpen || popAnim.running
 
-    PowerService {
-        id: powerService
+    NetworkService {
+        id: networkService
     }
 
     function open() {
-        PopoverManager.open("battery");
+        PopoverManager.open("network");
     }
 
     function close() {
-        PopoverManager.close("battery");
+        PopoverManager.close("network");
     }
 
     function toggle() {
-        PopoverManager.toggle("battery");
+        PopoverManager.toggle("network");
     }
 
-    // IPC handler allowing "quickshell ipc call battery toggle"
     IpcHandler {
-        target: "battery"
-        function toggle(): void { PopoverManager.toggle("battery"); }
-        function open(): void { PopoverManager.open("battery"); }
-        function close(): void { PopoverManager.close("battery"); }
+        target: "network"
+        function toggle(): void { PopoverManager.toggle("network"); }
+        function open(): void { PopoverManager.open("network"); }
+        function close(): void { PopoverManager.close("network"); }
+        function openPassword(ssid: string): void {
+            PopoverManager.open("network");
+            card.targetSsid = ssid;
+            card.isPasswordView = true;
+        }
     }
 
     // Global Shortcut toggle
     GlobalShortcut {
-        name: "toggleBattery"
-        onPressed: PopoverManager.toggle("battery")
+        name: "toggleNetwork"
+        onPressed: PopoverManager.toggle("network")
     }
 
     // Semi-transparent click-outside dismiss area
@@ -71,14 +76,14 @@ PanelWindow {
         onClicked: PopoverManager.closeAll()
     }
 
-    // Battery Popover Card anchored neatly below the right-side status bar
-    BatteryCard {
+    // Network Popover Card anchored neatly below the right-side status bar
+    NetworkCard {
         id: card
-        powerService: powerService
+        networkService: networkService
         anchors.top: parent.top
         anchors.topMargin: 3
         anchors.right: parent.right
-        anchors.rightMargin: 84
+        anchors.rightMargin: 46
 
         opacity: root.isOpen ? 1 : 0
         scale: root.isOpen ? 1.0 : 0.94

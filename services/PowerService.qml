@@ -84,6 +84,9 @@ Item {
     }
 
     function setProfileMode(mode, name) {
+        if (mode === "battery") root.onBatteryProfile = name;
+        if (mode === "ac") root.onAcProfile = name;
+        setProfileModeProc.running = false;
         setProfileModeProc.command = [root.scriptPath, "set-profile-mode", mode, name];
         setProfileModeProc.running = true;
     }
