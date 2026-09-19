@@ -25,10 +25,10 @@ Item {
     Column {
         id: cardsColumn
         anchors.top: parent.top
-        anchors.topMargin: 0
+        anchors.topMargin: 4
         anchors.left: parent.left
         anchors.right: parent.right
-        spacing: 6
+        spacing: 8
         visible: root.totalCount > 0
 
         Repeater {
@@ -46,15 +46,17 @@ Item {
                 appName: itemData ? itemData.appName : ""
                 summary: itemData ? itemData.summary : ""
                 body: itemData ? itemData.body : ""
+                appIcon: itemData ? itemData.appIcon : ""
                 timeStr: itemData ? itemData.timeStr : ""
-                isPinned: itemData ? itemData.isPinned : false
-
-                onPinClicked: {
-                    if (root.notifService) root.notifService.togglePin(notifId)
-                }
 
                 onDismissClicked: {
                     if (root.notifService) root.notifService.dismiss(notifId)
+                }
+
+                onCardClicked: {
+                    if (root.notifService && itemData) {
+                        root.notifService.focusNotificationWindow(itemData.appName, itemData.summary, itemData.id);
+                    }
                 }
             }
         }

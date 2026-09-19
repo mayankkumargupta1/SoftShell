@@ -201,6 +201,9 @@ Item {
                 preventStealing: true
                 onClicked: (mouse) => {
                     mouse.accepted = true;
+                    if (root.notifService && root.currentNotif) {
+                        root.notifService.focusNotificationWindow(root.currentNotif.appName, root.currentNotif.summary, root.currentNotif.id);
+                    }
                     root.viewClicked();
                 }
             }

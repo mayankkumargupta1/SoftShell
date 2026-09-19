@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import "../../theme"
 
+// NotificationCard — SoftShell horizontal notification card with top-left floating close button
 Rectangle {
     id: root
 
@@ -8,66 +9,148 @@ Rectangle {
     property string appName: "System"
     property string summary: ""
     property string body: ""
+    property string appIcon: ""
     property string timeStr: "Just now"
-    property bool isPinned: false
 
     signal dismissClicked()
-    signal pinClicked()
+    signal cardClicked()
 
-    implicitHeight: 68
-    radius: Theme.cardRadius
-    color: hoverHandler.hovered ? Theme.cardHover : Theme.cardBg
-    border.color: root.isPinned ? Theme.cardBorderPinned : (hoverHandler.hovered ? Qt.rgba(255, 255, 255, 0.20) : Theme.cardBorder)
+    implicitHeight: 70
+    radius: 14
+    color: cardMouse.containsMouse ? Theme.cardHover : Theme.cardBg
+    border.color: cardMouse.containsMouse ? Qt.rgba(255, 255, 255, 0.20) : Theme.cardBorder
     border.width: 1
     antialiasing: true
 
-    Behavior on color { ColorAnimation { duration: 140 } }
-    Behavior on border.color { ColorAnimation { duration: 140 } }
-
-    HoverHandler {
-        id: hoverHandler
-    }
+    Behavior on color { ColorAnimation { duration: 130 } }
+    Behavior on border.color { ColorAnimation { duration: 130 } }
 
     MouseArea {
+        id: cardMouse
         anchors.fill: parent
-        z: -1
-        cursorShape: Qt.ArrowCursor
-        preventStealing: true
-        onClicked: (mouse) => {
-            mouse.accepted = true;
+        z: 1
+        hoverEnabled: true
+        cursorShape: Qt.PointingHandCursor
+        onClicked: root.cardClicked()
+    }
+
+    // Circular Dismiss Button at Top-Left Corner (solid opaque white, zero translucency)
+    Rectangle {
+        id: closeBtn
+        width: 18
+        height: 18
+        radius: 9
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.topMargin: -5
+        anchors.leftMargin: -5
+        z: 30
+        antialiasing: true
+        color: closeMouse.pressed ? "#d0d0d0" : (closeMouse.containsMouse ? "#e8e8e8" : "#ffffff")
+        border.width: 0
+        opacity: 1.0
+
+        Text {
+            anchors.centerIn: parent
+            text: "✕"
+            font.family: Theme.fontFamily
+            font.pixelSize: 8
+            font.bold: true
+            color: "#000000"
+            renderType: Text.NativeRendering
+        }
+
+        MouseArea {
+            id: closeMouse
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            preventStealing: true
+            onClicked: (mouse) => {
+                mouse.accepted = true;
+                root.dismissClicked();
+            }
         }
     }
 
-    // App color helper
-    function getAppColor(name, sum, body) {
-        let n = ((name || "") + " " + (sum || "") + " " + (body || "")).toLowerCase();
-        if (n.indexOf("whatsapp") !== -1) return "#25d366";
-        if (n.indexOf("telegram") !== -1) return "#229ed9";
-        if (n.indexOf("discord") !== -1) return "#5865f2";
-        if (n.indexOf("github") !== -1) return "#24292f";
-        if (n.indexOf("spotify") !== -1) return "#1db954";
-        if (n.indexOf("slack") !== -1) return "#e01e5a";
-        if (n.indexOf("brave") !== -1) return "#fb542b";
-        if (n.indexOf("chrome") !== -1) return "#ea4335";
-        if (n.indexOf("firefox") !== -1) return "#ff7139";
-        if (n.indexOf("mail") !== -1 || n.indexOf("thunderbird") !== -1) return "#0a84ff";
-        if (n.indexOf("system") !== -1) return "#0a84ff";
-        if (n.indexOf("news") !== -1) return "#ff375f";
-        return "#0a84ff";
-    }
+    // Main Card Content Row
+    Row {
+        anchors.fill: parent
+        anchors.leftMargin: 14
+        anchors.rightMargin: 14
+        anchors.topMargin: 10
+        anchors.bottomMargin: 10
+        spacing: 12
 
-    function getAppGlyph(name, sum, body) {
-        let n = ((name || "") + " " + (sum || "") + " " + (body || "")).toLowerCase();
-        if (n.indexOf("whatsapp") !== -1) return "󰖣";
-        if (n.indexOf("telegram") !== -1) return "󰀻";
-        if (n.indexOf("discord") !== -1) return "󰙯";
-        if (n.indexOf("github") !== -1) return "󰊤";
-        if (n.indexOf("spotify") !== -1) return "󰓇";
-        if (n.indexOf("slack") !== -1) return "󰒱";
-        if (n.indexOf("brave") !== -1 || n.indexOf("chrome") !== -1 || n.indexOf("firefox") !== -1) return "󰖟";
-        if (n.indexOf("mail") !== -1) return "󰇮";
-        if (n.indexOf("system") !== -1) return "󰚰";
-        return name && name.length > 0 ? name.charAt(0).toUpperCase() : "󰂚";
+        // Left: Prominent Squircle App Icon Badge
+        NotificationAppIcon {
+            id: appBadge
+            anchors.verticalCenter: parent.verticalCenter
+            appName: root.appName
+            summary: root.summary
+            body: root.body
+            appIcon: root.appIcon
+        }
+
+        // Right: 3-Tier Typography Column
+        Column {
+            anchors.verticalCenter: parent.verticalCenter
+            width: parent.width - appBadge.width - parent.spacing
+            spacing: 2
+
+            // Line 1: Header Row (App Name / Category + Relative Timestamp)
+            Item {
+                width: parent.width
+                height: 14
+
+                Text {
+                    anchors.left: parent.left
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: root.appName.length > 0 ? root.appName.toUpperCase() : "NOTIFICATION"
+                    font.family: Theme.fontFamily
+                    font.pixelSize: 10
+                    font.bold: true
+                    font.letterSpacing: 0.6
+                    color: Theme.appleHeaderMuted
+                    renderType: Text.NativeRendering
+                }
+
+                Text {
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: root.timeStr
+                    font.family: Theme.fontFamily
+                    font.pixelSize: 10
+                    color: Theme.appleHeaderMuted
+                    renderType: Text.NativeRendering
+                }
+            }
+
+            // Line 2: Bold Subject / Title
+            Text {
+                width: parent.width
+                text: root.summary.length > 0 ? root.summary.replace(/[\r\n]+/g, " ") : root.appName
+                font.family: Theme.fontFamily
+                font.pixelSize: 13
+                font.bold: true
+                color: Theme.textPrimary
+                maximumLineCount: 1
+                elide: Text.ElideRight
+                renderType: Text.NativeRendering
+            }
+
+            // Line 3: Message Body Preview
+            Text {
+                width: parent.width
+                text: root.cleanBody(root.body.length > 0 ? root.body : root.summary)
+                font.family: Theme.fontFamily
+                font.pixelSize: 11
+                color: Theme.appleSubtext
+                maximumLineCount: 1
+                elide: Text.ElideRight
+                renderType: Text.NativeRendering
+            }
+        }
     }
 
     function cleanBody(b) {
@@ -76,167 +159,8 @@ Rectangle {
         if (lines.length === 0) return "";
         if (lines.length === 1) return lines[0];
         if (lines[0].indexOf(".com") !== -1 || lines[0].indexOf(".org") !== -1 || lines[0].indexOf(".net") !== -1 || lines[0].indexOf("http") !== -1) {
-            return lines.slice(1).join("\n");
+            return lines.slice(1).join(" ");
         }
-        return lines.join("\n");
-    }
-
-    Column {
-        anchors.fill: parent
-        anchors.leftMargin: 14
-        anchors.rightMargin: 14
-        anchors.topMargin: 9
-        anchors.bottomMargin: 9
-        spacing: 4
-
-        // --- 1. SoftShell Header Row: Micro Icon + All-Caps App Name ... Timestamp + Actions ---
-        Item {
-            width: parent.width
-            height: 16
-
-            // Left: Micro Squircle App Icon + Capitalized App Name
-            Row {
-                anchors.left: parent.left
-                anchors.verticalCenter: parent.verticalCenter
-                spacing: 6
-
-                Rectangle {
-                    anchors.verticalCenter: parent.verticalCenter
-                    width: 15
-                    height: 15
-                    radius: 4
-                    antialiasing: true
-                    color: root.getAppColor(root.appName, root.summary, root.body)
-                    border.width: 1
-                    border.color: Qt.rgba(255, 255, 255, 0.2)
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: root.getAppGlyph(root.appName, root.summary, root.body)
-                        font.family: Theme.iconFontFamily
-                        font.pixelSize: 9
-                        color: "#ffffff"
-                        renderType: Text.NativeRendering
-                    }
-                }
-
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    text: root.appName.toUpperCase()
-                    font.family: Theme.fontFamily
-                    font.pixelSize: 10
-                    font.bold: true
-                    font.letterSpacing: 0.6
-                    color: Theme.appleHeaderMuted
-                    renderType: Text.NativeRendering
-                }
-            }
-
-            // Right: Relative Timestamp + Pin & Close Controls
-            Row {
-                anchors.right: parent.right
-                anchors.verticalCenter: parent.verticalCenter
-                spacing: 6
-
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    text: root.timeStr
-                    font.family: Theme.fontFamily
-                    font.pixelSize: 10
-                    color: Theme.appleHeaderMuted
-                    renderType: Text.NativeRendering
-                }
-
-                // Pin Button Pill
-                Rectangle {
-                    anchors.verticalCenter: parent.verticalCenter
-                    width: 18
-                    height: 18
-                    radius: 9
-                    antialiasing: true
-                    color: root.isPinned ? Qt.rgba(245, 166, 35, 0.20)
-                         : (pinMouse.containsMouse ? Qt.rgba(255, 255, 255, 0.15) : "transparent")
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: "󰤱"
-                        font.family: Theme.iconFontFamily
-                        font.pixelSize: 10
-                        color: root.isPinned ? Theme.pinActive : (pinMouse.containsMouse ? "#ffffff" : Theme.appleHeaderMuted)
-                        renderType: Text.NativeRendering
-                    }
-
-                    MouseArea {
-                        id: pinMouse
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        preventStealing: true
-                        onClicked: (mouse) => {
-                            mouse.accepted = true;
-                            root.pinClicked();
-                        }
-                    }
-                }
-
-                // Close Button Circle (SoftShell style)
-                Rectangle {
-                    anchors.verticalCenter: parent.verticalCenter
-                    width: 18
-                    height: 18
-                    radius: 9
-                    antialiasing: true
-                    color: closeMouse.containsMouse ? Qt.rgba(255, 55, 95, 0.25) : "transparent"
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: "✕"
-                        font.family: Theme.fontFamily
-                        font.pixelSize: 9
-                        font.bold: true
-                        color: closeMouse.containsMouse ? Theme.accentRed : Theme.appleHeaderMuted
-                        renderType: Text.NativeRendering
-                    }
-
-                    MouseArea {
-                        id: closeMouse
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        preventStealing: true
-                        onClicked: (mouse) => {
-                            mouse.accepted = true;
-                            root.dismissClicked();
-                        }
-                    }
-                }
-            }
-        }
-
-        // --- 2. Content Row: Bold Subject/Title ---
-        Text {
-            width: parent.width
-            text: root.summary.length > 0 ? root.summary.replace(/[\r\n]+/g, " ") : root.appName
-            font.family: Theme.fontFamily
-            font.pixelSize: 13
-            font.bold: true
-            color: Theme.textPrimary
-            maximumLineCount: 1
-            elide: Text.ElideRight
-            renderType: Text.NativeRendering
-        }
-
-        // --- 3. Body Row: Message Preview ---
-        Text {
-            width: parent.width
-            text: root.cleanBody(root.body.length > 0 ? root.body : root.summary)
-            font.family: Theme.fontFamily
-            font.pixelSize: 11
-            color: Theme.appleSubtext
-            maximumLineCount: 2
-            wrapMode: Text.WordWrap
-            elide: Text.ElideRight
-            renderType: Text.NativeRendering
-        }
+        return lines.join(" ");
     }
 }

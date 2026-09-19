@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import Quickshell
+import Quickshell.Io
 import Quickshell.Services.Notifications
 import "../theme"
 
@@ -17,6 +18,13 @@ Item {
     property bool hasActiveBanner: false
     property var _bannerQueue: []
     property int bannerQueueCount: 0
+
+    // Signal emitted when user requests focusing the origin window
+    signal windowFocused()
+
+    Process {
+        id: focusProcess
+    }
 
     // Hover state forwarded from dynamic island (pauses banner auto-advance)
     property bool isIslandHovered: false
@@ -152,19 +160,30 @@ Item {
         }
     }
 
-    function clearAllUnpinned() {
-        for (let i = historyModel.count - 1; i >= 0; i--) {
-            if (!historyModel.get(i).isPinned) {
-                historyModel.remove(i, 1);
-            }
-        }
-        root.totalCount = historyModel.count;
-        root.hasNotifications = historyModel.count > 0;
+    function clearAll() {
+        historyModel.clear();
+        root.totalCount = 0;
+        root.hasNotifications = false;
         root._bannerQueue = [];
         root.bannerQueueCount = 0;
         root.activeBanner = null;
         root.hasActiveBanner = false;
         bannerTimer.stop();
+    }
+
+    function clearAllUnpinned() {
+        clearAll();
+    }
+
+    function focusNotificationWindow(appName, summary, notifId) {
+        let scriptPath = Quickshell.env("HOME") + "/.config/quickshell/scripts/focus_window.sh";
+        focusProcess.command = ["bash", scriptPath, String(appName || ""), String(summary || "")];
+        focusProcess.running = true;
+
+        if (notifId !== undefined && notifId !== 0) {
+            root.dismiss(notifId);
+        }
+        root.windowFocused();
     }
 
     function emitTestNotification(appName, summary, body, appIcon) {

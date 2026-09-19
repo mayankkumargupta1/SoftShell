@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Effects
 import Quickshell
 import Quickshell.Wayland
+import Quickshell.Io
 import "../theme"
 import "../components"
 import "../services"
@@ -55,6 +56,13 @@ PanelWindow {
     // Interaction state: expanded when clicked/pinned (hover never pins, it just peeks)
     property bool isPinned: false
 
+    IpcHandler {
+        target: "notch"
+        function toggle(): void { root.isPinned = !root.isPinned; }
+        function expand(): void { root.isPinned = true; }
+        function collapse(): void { root.isPinned = false; }
+    }
+
     // Auto-reset isPinned when nothing is left to show in expanded state
     // (notification cleared or island dismissed via close button)
     Connections {
@@ -75,6 +83,11 @@ PanelWindow {
             if (!notifService.hasNotifications && !notifService.hasActiveBanner) {
                 root.isPinned = false;
             }
+        }
+        function onWindowFocused() {
+            // Collapse island so user has full view of the newly focused workspace/window
+            root.isPinned = false;
+            autoCollapseTimer.stop();
         }
     }
 
@@ -283,9 +296,9 @@ PanelWindow {
                 anchors.fill: parent
                 visible: notifService.hasActiveBanner
                 onViewClicked: {
-                    // Expand island to show full notification, then auto-collapse after 6s
-                    root.isPinned = true;
-                    autoCollapseTimer.restart();
+                    // Collapse island so user can interact directly with the focused app
+                    root.isPinned = false;
+                    autoCollapseTimer.stop();
                 }
             }
 
