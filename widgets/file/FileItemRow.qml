@@ -89,6 +89,7 @@ Item {
         width: 24
         height: 24
         opacity: (rowHover.hovered || revealHover.hovered) ? 1.0 : 0.0
+        enabled: opacity > 0
         Behavior on opacity { NumberAnimation { duration: 100 } }
 
         Rectangle {
@@ -122,6 +123,13 @@ Item {
     }
 
     TapHandler {
-        onTapped: root.openClicked()
+        onTapped: {
+            // Don't also open the file when the click lands on the reveal button
+            // (prevents double-opening the folder + its contents)
+            var p = revealBtn.mapFromItem(root, point.position.x, point.position.y);
+            if (!revealBtn.contains(p)) {
+                root.openClicked();
+            }
+        }
     }
 }

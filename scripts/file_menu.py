@@ -159,9 +159,20 @@ def cmd_status():
         except Exception:
             pass
 
+    # 4. Storage quick-stat (home filesystem)
+    try:
+        du = shutil.disk_usage(home)
+        storage = {
+            "used": format_size(du.used),
+            "available": format_size(du.free),
+        }
+    except Exception:
+        storage = {"used": "", "available": ""}
+
     print(json.dumps({
         "downloads": downloads,
         "bookmarks": bookmarks,
+        "storage": storage,
         "trash": {
             "count": trash_count,
             "glyph": "󰩹" if trash_count > 0 else "󰩺",

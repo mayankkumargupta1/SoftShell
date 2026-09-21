@@ -52,24 +52,14 @@ Rectangle {
                 anchors.right: parent.right
                 anchors.rightMargin: 6
                 anchors.verticalCenter: parent.verticalCenter
-                text: "Open All"
+                text: root.fileService && root.fileService.storageUsed !== ""
+                    ? root.fileService.storageUsed + " used · " + root.fileService.storageAvailable + " free"
+                    : ""
                 font.family: Theme.fontFamily
-                font.pixelSize: 11
+                font.pixelSize: 10
                 font.weight: Font.Medium
-                color: openAllHover.hovered ? "#3395ff" : "#007aff"
+                color: Theme.appleHeaderMuted
                 renderType: Text.NativeRendering
-
-                HoverHandler {
-                    id: openAllHover
-                    cursorShape: Qt.PointingHandCursor
-                }
-
-                TapHandler {
-                    onTapped: {
-                        if (root.fileService) root.fileService.openFolder(Quickshell.env("HOME") + "/Downloads");
-                        PopoverManager.close("file");
-                    }
-                }
             }
         }
 

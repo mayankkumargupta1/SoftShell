@@ -12,6 +12,8 @@ Item {
     property int trashCount: 0
     property string trashText: "Empty"
     property string trashGlyph: "󰩺"
+    property string storageUsed: ""
+    property string storageAvailable: ""
     property bool isLoading: false
 
     readonly property string scriptPath: Quickshell.env("HOME") + "/.config/quickshell/scripts/file_menu.py"
@@ -72,6 +74,10 @@ Item {
                         root.trashCount = data.trash.count || 0;
                         root.trashText = data.trash.text || "Empty";
                         root.trashGlyph = data.trash.glyph || "󰩺";
+                    }
+                    if (data.storage) {
+                        root.storageUsed = data.storage.used || "";
+                        root.storageAvailable = data.storage.available || "";
                     }
                 } catch(e) {
                     console.warn("FileService parse error:", e);
