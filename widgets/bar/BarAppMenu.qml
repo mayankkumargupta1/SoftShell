@@ -1,32 +1,15 @@
 import QtQuick 2.15
 import Quickshell
-import Quickshell.Hyprland
 import "../../theme"
 import "../../services/popover"
 
 // BarAppMenu — SoftShell left-side menu bar items:
-// SoftShell logo | Active App Name (bold) | File | Edit | View | Go | Tools | Window | Help
+// SoftShell logo | File | Edit | View | Go | Tools | Window | Help
 Item {
     id: root
 
     implicitHeight: Theme.barHeight
     implicitWidth: menuRow.implicitWidth
-
-    // Determine current active application name
-    readonly property string currentAppName: {
-        let win = Hyprland.focusedWindow;
-        if (!win) return "Preview";
-        let c = win.cls || win.initialClass || "";
-        if (c.length > 0) {
-            return c.charAt(0).toUpperCase() + c.slice(1);
-        }
-        let t = win.title || "";
-        if (t.length > 0) {
-            let parts = t.split(" - ");
-            return parts[parts.length - 1].trim();
-        }
-        return "Preview";
-    }
 
     readonly property var menuItems: ["File", "Edit", "View", "Go", "Tools", "Window", "Help"]
 
@@ -86,39 +69,7 @@ Item {
             }
         }
 
-        // 2. Active Application Name (Bold)
-        Item {
-            anchors.verticalCenter: parent.verticalCenter
-            width: appNameText.implicitWidth + 16
-            height: 22
-
-            Rectangle {
-                anchors.fill: parent
-                radius: 4
-                color: appHover.hovered ? Theme.barItemHover : "transparent"
-                Behavior on color { ColorAnimation { duration: 100 } }
-            }
-
-            Text {
-                id: appNameText
-                anchors.centerIn: parent
-                text: root.currentAppName
-                font.family: Theme.fontFamily
-                font.pixelSize: 13
-                font.weight: Font.Bold
-                color: Theme.barText
-                renderType: Text.NativeRendering
-                style: Text.Raised
-                styleColor: Qt.rgba(0, 0, 0, 0.40)
-            }
-
-            HoverHandler {
-                id: appHover
-                cursorShape: Qt.PointingHandCursor
-            }
-        }
-
-        // 3. Menu Items (File, Edit, View, Go, Tools, Window, Help)
+        // 2. Menu Items (File, Edit, View, Go, Tools, Window, Help)
         Repeater {
             model: root.menuItems
 

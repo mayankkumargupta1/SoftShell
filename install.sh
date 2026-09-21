@@ -72,6 +72,7 @@ check_and_install_dependencies() {
         "cliphist"
         "grim"
         "slurp"
+        "swappy"
         "mpvpaper"
         "upower"
         "power-profiles-daemon"
@@ -273,10 +274,10 @@ hl.bind("XF86AudioMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ to
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"), { repeating = true, locked = true })
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"), { repeating = true, locked = true })
 
--- Screenshots (grim & slurp)
-hl.bind("Print", hl.dsp.exec_cmd("grim -g \"$(slurp)\" - | wl-copy"), { locked = true })
+-- Screenshots (SoftShell: capture + swappy annotation + Dynamic Island indicator)
+hl.bind("Print", hl.dsp.exec_cmd("bash ~/.config/quickshell/scripts/screenshot.sh region"), { locked = true })
+hl.bind("SUPER + Print", hl.dsp.exec_cmd("bash ~/.config/quickshell/scripts/screenshot.sh screen"), { locked = true })
 hl.bind("SHIFT + Print", hl.dsp.exec_cmd("grim -g \"$(slurp)\" ~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png"), { locked = true })
-hl.bind("SUPER + Print", hl.dsp.exec_cmd("grim ~/Pictures/Screenshots/$(date +%Y-%m-%d_%H-%M-%S).png"), { locked = true })
 
 -- Applications & Terminal
 hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd(terminal))
