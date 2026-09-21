@@ -102,6 +102,13 @@ Item {
     }
 
     TapHandler {
-        onTapped: root.clicked()
+        onTapped: {
+            // Don't open the trash folder when the click lands on the "Empty" action
+            // (prevents emptying AND opening the trash explorer at once)
+            var p = emptyBtn.mapFromItem(root, point.position.x, point.position.y);
+            if (!emptyBtn.contains(p)) {
+                root.clicked();
+            }
+        }
     }
 }

@@ -3,3 +3,6 @@
 .DS_Store
 *.eml
 .claude
+
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/
