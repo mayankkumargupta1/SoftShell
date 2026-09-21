@@ -2,6 +2,7 @@ import QtQuick 2.15
 import Quickshell
 import Quickshell.Hyprland
 import "../../theme"
+import "../../services/popover"
 
 // BarAppMenu — SoftShell left-side menu bar items:
 // SoftShell logo | Active App Name (bold) | File | Edit | View | Go | Tools | Window | Help
@@ -131,7 +132,7 @@ Item {
                 Rectangle {
                     anchors.fill: parent
                     radius: 4
-                    color: itemHover.hovered ? Theme.barItemHover : "transparent"
+                    color: (itemTap.pressed || itemHover.hovered || (modelData === "File" && PopoverManager.activePopover === "file")) ? Theme.barItemHover : "transparent"
                     Behavior on color { ColorAnimation { duration: 100 } }
                 }
 
@@ -144,13 +145,20 @@ Item {
                     font.weight: Font.Normal
                     color: Theme.barText
                     renderType: Text.NativeRendering
-                    style: Text.Raised
-                    styleColor: Qt.rgba(0, 0, 0, 0.40)
                 }
 
                 HoverHandler {
                     id: itemHover
                     cursorShape: Qt.PointingHandCursor
+                }
+
+                TapHandler {
+                    id: itemTap
+                    onTapped: {
+                        if (modelData === "File") {
+                            PopoverManager.toggle("file");
+                        }
+                    }
                 }
             }
         }

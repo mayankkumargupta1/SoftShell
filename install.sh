@@ -187,7 +187,7 @@ deploy_softshell() {
         fi
     done
 
-    chmod +x "$QS_CONFIG_DIR/scripts/"*.sh 2>/dev/null || true
+    chmod +x "$QS_CONFIG_DIR/scripts/"*.sh "$QS_CONFIG_DIR/scripts/"*.py 2>/dev/null || true
 
     success "SoftShell deployed successfully to $QS_CONFIG_DIR."
 }

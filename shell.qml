@@ -10,6 +10,7 @@ Scope {
     LauncherWindow {}
     BatteryWindow {}
     NetworkWindow {}
+    FileWindow {}
     OsdWindow {}
 
     // Global IPC target: "quickshell ipc call popover toggle <name>"
