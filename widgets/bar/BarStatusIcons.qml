@@ -65,15 +65,13 @@ Item {
                 Behavior on color { ColorAnimation { duration: 100 } }
             }
 
-            Text {
+            BarWifiIcon {
                 anchors.centerIn: parent
-                text: "󰤨"
-                font.family: Theme.iconFontFamily
-                font.pixelSize: 15
-                color: Theme.barText
-                renderType: Text.NativeRendering
-                style: Text.Raised
-                styleColor: Qt.rgba(0, 0, 0, 0.40)
+                wifiConnected: root.stats ? root.stats.wifiConnected : false
+                wifiEnabled: root.stats ? root.stats.wifiEnabled : true
+                ethernetConnected: root.stats ? root.stats.ethernetConnected : false
+                signalQuality: root.stats ? root.stats.wifiSignalQuality : 0
+                connectivity: root.stats ? root.stats.connectivity : "full"
             }
 
             HoverHandler {

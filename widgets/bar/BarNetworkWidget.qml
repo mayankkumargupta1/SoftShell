@@ -12,17 +12,28 @@ Item {
     implicitHeight: Theme.barHeight
 
     function wifiGlyph() {
-        if (!stats || !stats.wifiConnected) return "󰤭";
+        if (!stats) return "󰤨";
+        if (stats.ethernetConnected && !stats.wifiConnected) return "󰈀";
+        if (!stats.wifiEnabled) return "󰤮";
+        if (!stats.wifiConnected || stats.connectivity === "none") return "󰤭";
+        if (stats.connectivity === "portal" || stats.connectivity === "limited") return "󰤩";
         let q = stats.wifiSignalQuality;
-        if (q >= 80) return "󰤨";
-        if (q >= 55) return "󰤥";
-        if (q >= 35) return "󰤢";
-        if (q >= 10) return "󰤟";
+        if (q >= 75) return "󰤨";
+        if (q >= 50) return "󰤥";
+        if (q >= 25) return "󰤢";
+        if (q > 0)   return "󰤟";
         return "󰤯";
     }
 
     function wifiColor() {
-        if (!stats || !stats.wifiConnected) return Theme.barMuted;
+        if (!stats) return Theme.barText;
+        if (!stats.wifiEnabled) return Qt.rgba(255, 255, 255, 0.35);
+        if ((!stats.wifiConnected && !stats.ethernetConnected) || stats.connectivity === "none") {
+            return Qt.rgba(255, 255, 255, 0.45);
+        }
+        if (stats.connectivity === "portal" || stats.connectivity === "limited") {
+            return Theme.statYellow;
+        }
         return Theme.barText;
     }
 
@@ -45,7 +56,11 @@ Item {
         Text {
             anchors.verticalCenter: parent.verticalCenter
             text: {
-                if (!root.stats || !root.stats.wifiConnected) return "No Wi-Fi";
+                if (!root.stats) return "";
+                if (root.stats.ethernetConnected && !root.stats.wifiConnected) return "Ethernet";
+                if (!root.stats.wifiEnabled) return "Wi-Fi Off";
+                if (!root.stats.wifiConnected) return "Not Connected";
+                if (root.stats.connectivity === "none") return "No Internet";
                 let ssid = root.stats.wifiSsid;
                 return ssid.length > 14 ? ssid.substring(0, 13) + "…" : ssid;
             }

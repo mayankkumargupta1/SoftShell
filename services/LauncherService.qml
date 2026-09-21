@@ -12,6 +12,10 @@ Item {
 
     readonly property bool isCommandMode: searchQuery.trim().startsWith(">")
     readonly property string commandText: isCommandMode ? searchQuery.trim().substring(1).trim() : ""
+    readonly property string userShell: {
+        var sh = Quickshell.env("SHELL");
+        return (sh && sh.length > 0) ? sh : "zsh";
+    }
 
     signal opened()
     signal closed()
@@ -71,7 +75,7 @@ Item {
                     isCommand: true,
                     isTerminal: false,
                     name: "Run in Background",
-                    comment: "Execute detached in background via bash",
+                    comment: "Execute detached in background via " + root.userShell,
                     command: rawCmd,
                     iconGlyph: ""
                 });
@@ -149,7 +153,7 @@ Item {
             isCommand: true,
             isTerminal: false,
             name: "Run '" + rawTrimmed + "' in Background",
-            comment: "Execute detached via bash",
+            comment: "Execute detached via " + root.userShell,
             command: rawTrimmed,
             iconGlyph: ""
         });
@@ -200,11 +204,12 @@ Item {
     function executeCommand(cmd, isTerminal) {
         if (!cmd || cmd.trim().length === 0) return;
         var trimmed = cmd.trim();
-        console.log("LauncherService: Executing ->", trimmed, "isTerminal:", isTerminal);
+        var shell = userShell;
+        console.log("LauncherService: Executing ->", trimmed, "isTerminal:", isTerminal, "shell:", shell);
         if (isTerminal) {
-            Quickshell.execDetached(["kitty", "-e", "bash", "-c", trimmed + "; exec bash"]);
+            Quickshell.execDetached(["kitty", "-e", shell, "-c", trimmed + "; exec " + shell]);
         } else {
-            Quickshell.execDetached(["bash", "-c", trimmed + " &"]);
+            Quickshell.execDetached([shell, "-c", trimmed + " &"]);
         }
     }
 

@@ -59,7 +59,15 @@ Item {
 
                     Text {
                         anchors.centerIn: parent
-                        text: "󰤨"
+                        text: {
+                            if (!root.networkService || !root.networkService.wifiEnabled) return "󰤮";
+                            if (!root.hasActive) return "󰤭";
+                            let sig = (root.active && root.active.signal) ? root.active.signal : 0;
+                            if (sig >= 75) return "󰤨";
+                            if (sig >= 50) return "󰤥";
+                            if (sig >= 25) return "󰤢";
+                            return "󰤟";
+                        }
                         font.family: Theme.iconFontFamily
                         font.pixelSize: 12
                         color: "#ffffff"

@@ -18,6 +18,9 @@ QtObject {
     property bool wifiConnected: false
     property string wifiSsid: ""
     property int wifiSignalQuality: 0   // 0-100 quality scale
+    property bool wifiEnabled: true
+    property bool ethernetConnected: false
+    property string connectivity: "full" // full, limited, portal, none, unknown
 
     // --- Internal CPU diff state ---
     property var _prevCpuIdle: -1
@@ -39,13 +42,21 @@ QtObject {
         }
     }
 
-    // WiFi polls every 10s to avoid subprocess overhead
+    // WiFi & connectivity poll every 3.5s (fast ~30ms async probe)
     property var _wifiTimer: Timer {
-        interval: 10000
+        interval: 3500
         running: true
         repeat: true
         triggeredOnStart: true
-        onTriggered: wifiProc.running = true
+        onTriggered: {
+            wifiProc.running = false;
+            wifiProc.running = true;
+        }
+    }
+
+    function refreshWifi() {
+        wifiProc.running = false;
+        wifiProc.running = true;
     }
 
     // -----------------------------------------------------------------------
@@ -133,27 +144,45 @@ QtObject {
     }
 
     // -----------------------------------------------------------------------
-    // 6. WiFi SSID + Signal Quality
+    // 6. WiFi SSID + Signal Quality + Connectivity State
     // -----------------------------------------------------------------------
     property var wifiProc: Process {
         command: ["sh", "-c",
-            "SSID=$(nmcli -t -f active,ssid dev wifi 2>/dev/null | grep '^yes' | head -1 | cut -d: -f2); " +
-            "QUAL=$(awk 'NR==3{gsub(/\\./, \"\", $3); print $3}' /proc/net/wireless 2>/dev/null); " +
-            "echo \"${SSID}||${QUAL}\""]
+            "RADIO=$(nmcli -t -f WIFI g 2>/dev/null); " +
+            "CONN=$(nmcli -t -f CONNECTIVITY g 2>/dev/null); " +
+            "LINE=$(nmcli -t -f active,ssid,signal dev wifi 2>/dev/null | grep '^yes:' | head -1); " +
+            "ETH=$(nmcli -t -f TYPE,STATE dev 2>/dev/null | grep '^ethernet:connected' | head -1); " +
+            "SSID=''; SIG='0'; " +
+            "if [ -n \"$LINE\" ]; then " +
+            "  REST=\"${LINE#yes:}\"; " +
+            "  SIG=\"${REST##*:}\"; " +
+            "  SSID=\"${REST%:*}\"; " +
+            "elif [ \"$RADIO\" = \"enabled\" ]; then " +
+            "  ACT_CON=$(nmcli -t -f NAME,TYPE connection show --active 2>/dev/null | grep ':802-11-wireless' | head -1); " +
+            "  if [ -n \"$ACT_CON\" ]; then " +
+            "    SSID=\"${ACT_CON%:802-11-wireless*}\"; " +
+            "    SIG='70'; " +
+            "  fi; " +
+            "fi; " +
+            "echo \"${RADIO}||${CONN}||${ETH}||${SIG}||${SSID}\""]
         stdout: StdioCollector {
             onStreamFinished: {
                 try {
                     let text = this.text.trim();
-                    let sep = text.indexOf("||");
-                    if (sep >= 0) {
-                        let ssid = text.substring(0, sep).trim();
-                        let qualStr = text.substring(sep + 2).trim();
+                    let parts = text.split("||");
+                    if (parts.length >= 5) {
+                        let radio = parts[0].trim();
+                        let conn = parts[1].trim();
+                        let eth = parts[2].trim();
+                        let sig = parseInt(parts[3].trim());
+                        let ssid = parts[4].trim();
+
+                        root.wifiEnabled = (radio !== "disabled");
+                        root.connectivity = conn || "full";
+                        root.ethernetConnected = eth.length > 0;
                         root.wifiSsid = ssid;
                         root.wifiConnected = ssid.length > 0;
-                        let qual = parseInt(qualStr);
-                        root.wifiSignalQuality = (!isNaN(qual) && qual > 0)
-                            ? Math.min(100, Math.round(qual / 70 * 100))
-                            : 0;
+                        root.wifiSignalQuality = (!isNaN(sig) && sig >= 0) ? Math.min(100, sig) : 0;
                     }
                 } catch(e) { console.warn("WIFI parse error:", e); }
             }
