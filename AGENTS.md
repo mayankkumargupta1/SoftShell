@@ -30,6 +30,7 @@ Maintain a clean and predictable directory structure:
 │   │   ├── ClockWidget.qml
 │   │   └── CalendarPopup.qml
 │   ├── battery/                # Battery status & popover
+│   ├── network/                # Network status & popover
 │   ├── workspaces/             # Compositor workspace switcher
 │   ├── mpris/                  # Media player controller
 │   ├── audio/                  # Volume & device controls
@@ -42,7 +43,7 @@ Maintain a clean and predictable directory structure:
 └── services/                   # Data providers, IPC, and system integration
     ├── HyprlandIpc.qml         # Compositor IPC connection/listener
     ├── AudioService.qml        # Pipewire / wpctl interface
-    └── SystemInfoService.qml   # Resource monitoring backend
+    └── SystemStatsService.qml  # Resource & network monitoring backend
 ```
 
 ### 1.2 Decomposition Principles
@@ -78,23 +79,89 @@ Maintain a clean and predictable directory structure:
   - Configure the window's `mask` or input region to match only the interactive geometry.
 - Prefer `HoverHandler` and `TapHandler` over legacy `MouseArea` where possible for modern QtQuick event handling.
 
-### 2.3 Non-Blocking Execution
+### 2.3 Window Exclusivity & Single Active Popover
+- **Single Active Popover Rule (`PopoverManager`)**: Opening any popover or menu from the top bar (Battery, Wi-Fi, Control Center, App Menu) must **automatically close any other open popovers**. Multiple popovers must never overlap or stay open simultaneously.
+- **Tight Visual Docking**: Popover surfaces must be positioned closely to their trigger icons (within **2–4px** of the bar) to look anchored to the menu bar rather than disconnected.
+
+### 2.4 Non-Blocking Execution
 - **Never block the QML UI thread.**
 - When interacting with shell commands or external tools, use Quickshell's asynchronous `Process` APIs:
-  - Read output via asynchronous signals (`onStdoutChanged`, `onFinished`).
+  - Read output via asynchronous signals (`onStdoutChanged`, `onFinished`, `StdioCollector`, `SplitParser`).
   - Gracefully handle process errors and non-zero exit codes.
-- Utilize Quickshell's built-in services (`Quickshell.Services.Pipewire`, `Quickshell.Services.Mpris`, `Quickshell.Services.SystemTray`, etc.) instead of spawning external CLI tools (`pactl`, `playerctl`) repeatedly.
+- Utilize Quickshell's built-in services (`Quickshell.Services.Pipewire`, `Quickshell.Services.Mpris`, `Quickshell.Services.SystemTray`, etc.) instead of spawning external CLI tools repeatedly.
 
 ---
 
-## 3. QML Best Practices & Conventions
+## 3. Visual Aesthetics & SoftShell Design System
 
-### 3.1 Declarative Over Imperative
+### 3.1 Pure AMOLED Black Overlays
+- Popovers (Battery, Network, Control Center) and floating OSD indicators must use **100% opaque AMOLED Black** (`#000000` / `#161618`).
+- Do not use milky translucent or frosted glass backgrounds for popovers or on-screen display indicators.
+- Floating OSD indicators (volume, brightness, mic mute) should remain borderless and clean against the dark background.
+
+### 3.2 Flat, Opaque White Glyphs
+- Status bar and indicator glyphs must render as crisp, flat, opaque white (`#ffffff`).
+- Avoid 3D bevels, raised styling, or blurry drop shadows (do not use `style: Text.Raised`).
+
+### 3.3 Antialiasing Everywhere
+- Explicitly enable `antialiasing: true` on all rectangles, circular badges, sliders, borders, and custom shapes to prevent jagged edges.
+
+### 3.4 Clean Hierarchy & SoftShell Styling
+- Avoid cluttered card-in-card designs (GNOME/Libadwaita style).
+- Use flat sections separated by subtle dividers (`Theme.popoverSeparator`).
+- Use blue link-style action text (e.g., "Disconnect", "Forget") for secondary actions.
+
+### 3.5 Wallpaper Presentation
+- Background wallpapers must always use `fillMode: Image.PreserveAspectCrop` (CSS `object-fit: cover`) to fill the entire monitor geometry without letterboxing or distortion.
+
+---
+
+## 4. Notifications & Dynamic Island Interactions
+
+### 4.1 Notification Focus & Workspace Switching
+- When the user clicks on a notification (or the "View" action button in the dynamic island), the shell must communicate with the compositor (Hyprland IPC) to find the window associated with the notification and **automatically switch to that workspace and focus the window**.
+
+### 4.2 Auto-Unpin / Dismiss After Action
+- Clicking any notification action button (e.g., "View" or "Dismiss") must collapse the dynamic island and **must never leave it pinned or stuck in the expanded state**.
+
+### 4.3 Hover Suppression During Active Alerts
+- When a notification is active in the collapsed/shrink dynamic island, mouse hover must not accidentally trigger compact music or pill expansion.
+
+---
+
+## 5. Shell & Terminal Execution
+
+### 5.1 Respect User Login Shell (Default to Zsh)
+- When launching commands, user-defined apps, or spawning terminal windows, **never default to `bash`**.
+- Always check the user's active shell (`Quickshell.env("SHELL")`) or default explicitly to `zsh` (`/usr/bin/zsh`).
+
+---
+
+## 6. Dynamic & Reactive Hardware Status
+
+### 6.1 No Static Status Bar Icons
+- Status bar icons (Network, Battery, Volume, Microphone) must **never be static dummy glyphs**. They must react dynamically to real-time hardware status:
+  - **Wi-Fi**: Connected signal tiers (`󰤨` $\ge 75\%$, `󰤥` $\ge 50\%$, `󰤢` $\ge 25\%$, `󰤟` $> 0\%$, `󰤯` $0\%$), disconnected (`󰤭`), radio disabled (`󰤮`), captive portal / limited connectivity (`󰤩`).
+  - **Ethernet**: Wired connection glyph (`󰈀`).
+  - **Battery**: Dynamic percentage fill, warning yellow ($<40\%$), critical red ($<20\%$), charging green (`Theme.batteryCharging`).
+
+### 6.2 Modern Hardware Probing
+- Never rely on obsolete kernel paths like `/proc/net/wireless` (modern Linux Wi-Fi drivers do not populate it).
+- Use fast, non-blocking asynchronous CLI probes (`nmcli`, `upower`, `wpctl`) with lightweight polling cadences (3–4 seconds for network, 2 seconds for CPU/RAM/Battery).
+
+### 6.3 Significant Energy Process Filtering
+- Resource monitors in the power popover must not dump raw unfiltered process lists. Filter by meaningful thresholds (e.g. only processes using $>20\%$ CPU or $>30\%$ GPU) to accurately highlight power-draining apps.
+
+---
+
+## 7. QML Best Practices & Conventions
+
+### 7.1 Declarative Over Imperative
 - **Property Bindings**: Always prefer declarative bindings over imperative JavaScript assignments in signal handlers.
 - **Avoid Binding Loops**: Do not reassign properties inside handlers that depend on those properties.
 - **Strict Typing**: Always declare explicit types (`property int count`, `property real progress`, `property string label`, `property color activeColor`) instead of `property var`.
 
-### 3.2 Component Ordering Convention
+### 7.2 Component Ordering Convention
 Maintain a consistent structure inside all QML files:
 ```qml
 Item {
@@ -131,35 +198,11 @@ Item {
 }
 ```
 
-### 3.3 Theme & Design System
-- Centralize all colors, spacing, corner radii, and font definitions in a single theme file (e.g. `theme/Theme.qml`).
-- Use `pragma Singleton` with a `qmldir` file so that `Theme` is accessible across any component without manual relative path importing:
-  ```qml
-  // theme/Theme.qml
-  pragma Singleton
-  import QtQuick 2.15
+### 7.3 Theme & Design System
+- Centralize all colors, spacing, corner radii, and font definitions in a single theme file (`theme/Theme.qml`).
+- Use `pragma Singleton` with a `qmldir` file so that `Theme` is accessible across any component without manual relative path importing.
 
-  QtObject {
-      readonly property color bgPrimary: "#1e1e2e"
-      readonly property color bgSecondary: "#313244"
-      readonly property color textPrimary: "#cdd6f4"
-      readonly property color accent: "#89b4fa"
-      
-      readonly property int radiusSmall: 8
-      readonly property int radiusMedium: 16
-      readonly property int radiusLarge: 24
-      
-      readonly property int spaceSmall: 6
-      readonly property int spaceMedium: 12
-      readonly property int spaceLarge: 20
-  }
-  ```
-  ```
-  # theme/qmldir
-  singleton Theme 1.0 Theme.qml
-  ```
-
-### 3.4 Smooth Transitions & Spring Animations
+### 7.4 Smooth Transitions & Spring Animations
 - Keep animations snappy and natural:
   - Use `SpringAnimation` for dynamic physical interactions (e.g. dynamic island expand/collapse, sliders).
   - Use `NumberAnimation` with `Easing.OutCubic` or `Easing.OutQuad` for general UI transitions.
@@ -167,12 +210,17 @@ Item {
 
 ---
 
-## 4. Development & Verification Workflow
+## 8. Development & Verification Workflow
 
 1. **Verify Syntax & Logs**:
    - Run `quickshell` in the terminal to inspect startup logs, QML warning messages, and unresolved import paths.
-   - Look out for type warnings, binding loop notifications, or missing object errors in the stdout/stderr stream.
-2. **Isolated Widget Testing**:
-   - When building a new widget, test it individually or embed it in a minimal test panel before integrating it into the main `shell.qml`.
-3. **Robust Fallbacks**:
-   - Guard against missing hardware or daemon unavailability (e.g. laptops without battery sensor detected, media player stopped, network disconnected). Display placeholder or clean collapsed states rather than throwing errors.
+   - Watch for type warnings, binding loop notifications, or missing object errors in the stdout/stderr stream.
+2. **Local Sync & Testing**:
+   - Keep `~/.config/quickshell` in continuous sync (`rsync -av --exclude='.git' ./ ~/.config/quickshell/`).
+   - Test changes locally and reload via IPC (`quickshell ipc ...`) or process restart.
+3. **Daemon Hygiene**:
+   - Ensure old or competing background daemons (e.g. `serpantinumd`, orphaned `mpvpaper`, stale `quickshell` processes) are cleaned up during installs and reloads.
+4. **Git Hygiene**:
+   - Avoid premature or noisy git pushes for every tiny incremental change; commit and push when features and bug fixes are complete and verified.
+5. **Install Script Synchronization**:
+   - Always update `install.sh` whenever new dependencies, files, or services are added to the project.
