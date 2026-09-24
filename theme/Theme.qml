@@ -119,4 +119,14 @@ QtObject {
     // --- Additional animation constants ---
     readonly property int animFast: 120
     readonly property int animMedium: 200
+
+    // --- Generated (matugen) accent tokens ---
+    // Live, opt-in and intentionally NOT readonly: ThemeGenService pushes values
+    // in after deriving a palette from the wallpaper. Defaults mirror the static
+    // accents, so the shell is unchanged when generation never runs. Nothing in
+    // the shell consumes these yet — adopt them per-widget deliberately.
+    property bool genAvailable: false
+    property color genAccent: accentBlue
+    property color genAccentAlt: accentGreen
+    property color genSurface: popoverCardBg
 }

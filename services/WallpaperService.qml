@@ -11,17 +11,31 @@ Item {
     property var wallpapers: []
     property bool isInitialized: false
 
+    // When false the service never re-applies the wallpaper on construction, so
+    // secondary consumers (e.g. the Edit popover picker) can read state without
+    // killing and respawning the mpvpaper daemon owned by the primary instance.
+    property bool autoInit: true
+
     signal wallpaperChanged(string path)
 
     readonly property string scriptPath: Quickshell.env("HOME") + "/.config/quickshell/scripts/wallpaper.sh"
 
     Component.onCompleted: {
         refreshList();
-        initWallpaper();
+        if (root.autoInit) {
+            initWallpaper();
+        } else {
+            refreshCurrent();
+        }
     }
 
     function initWallpaper() {
         initProc.running = true;
+    }
+
+    // Reads the active wallpaper path without applying anything
+    function refreshCurrent() {
+        currentProc.running = true;
     }
 
     function nextWallpaper() {
@@ -45,10 +59,25 @@ Item {
     Process {
         id: listProc
         command: [root.scriptPath, "list"]
-        stdout: SplitParser {
-            onRead: data => {
-                let lines = data.trim().split("\n").filter(l => l.length > 0);
-                root.wallpapers = lines;
+        // Collected as a whole stream: a SplitParser fires once per line, so each
+        // callback overwrote the list and left only the final entry behind.
+        stdout: StdioCollector {
+            onStreamFinished: {
+                root.wallpapers = text.trim().split("\n").filter(l => l.length > 0);
+            }
+        }
+    }
+
+    // Read-only probe of the active wallpaper (never applies it)
+    Process {
+        id: currentProc
+        command: [root.scriptPath, "current"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                let line = text.trim();
+                if (line.length > 0) {
+                    root.currentWallpaper = line;
+                }
             }
         }
     }

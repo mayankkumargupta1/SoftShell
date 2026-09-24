@@ -74,6 +74,8 @@ check_and_install_dependencies() {
         "slurp"
         "swappy"
         "mpvpaper"
+        "matugen"
+        "ffmpeg"
         "upower"
         "power-profiles-daemon"
         "networkmanager"

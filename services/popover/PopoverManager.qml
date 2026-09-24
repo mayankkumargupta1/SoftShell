@@ -9,6 +9,14 @@ QtObject {
     // Name of currently active popover ("" when no popover is open)
     property string activePopover: ""
 
+    // Screen X of the "File" menu item, published by BarAppMenu so the File
+    // popover can dock directly beneath its trigger instead of a magic offset.
+    property real fileMenuX: 48
+
+    // Screen X of the "Edit" menu item, published by BarAppMenu so the Edit
+    // popover can dock directly beneath its trigger instead of a magic offset.
+    property real editMenuX: 48
+
     // Read-only convenience property
     readonly property bool hasActivePopover: activePopover !== ""
 

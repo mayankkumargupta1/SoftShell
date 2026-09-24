@@ -13,6 +13,16 @@ Item {
 
     readonly property var menuItems: ["File", "Edit", "View", "Go", "Tools", "Window", "Help"]
 
+    // Menu label -> popover name. Adding another dropdown menu is one entry here.
+    readonly property var popoverFor: ({ "File": "file", "Edit": "edit" })
+
+    // Publish a menu item's screen X as PopoverManager.<name>MenuX so its
+    // popover docks directly under the trigger instead of a magic offset.
+    function _publishMenuX(name, item) {
+        if (!name || name === "" || !item) return;
+        PopoverManager[name + "MenuX"] = item.mapToItem(null, 0, 0).x;
+    }
+
     Row {
         id: menuRow
         anchors.verticalCenter: parent.verticalCenter
@@ -74,16 +84,24 @@ Item {
             model: root.menuItems
 
             delegate: Item {
+                id: menuItem
                 required property string modelData
 
                 anchors.verticalCenter: parent.verticalCenter
                 width: menuText.implicitWidth + 16
                 height: 22
 
+                // Popover this label triggers ("" for inert labels like View/Go)
+                readonly property string popoverName: root.popoverFor[modelData] || ""
+
+                // Keep this item's popover anchored beneath its real position
+                Component.onCompleted: root._publishMenuX(popoverName, menuItem)
+                onXChanged: root._publishMenuX(popoverName, menuItem)
+
                 Rectangle {
                     anchors.fill: parent
                     radius: 4
-                    color: (itemTap.pressed || itemHover.hovered || (modelData === "File" && PopoverManager.activePopover === "file")) ? Theme.barItemHover : "transparent"
+                    color: (itemTap.pressed || itemHover.hovered || (menuItem.popoverName !== "" && PopoverManager.activePopover === menuItem.popoverName)) ? Theme.barItemHover : "transparent"
                     Behavior on color { ColorAnimation { duration: 100 } }
                 }
 
@@ -106,8 +124,8 @@ Item {
                 TapHandler {
                     id: itemTap
                     onTapped: {
-                        if (modelData === "File") {
-                            PopoverManager.toggle("file");
+                        if (menuItem.popoverName !== "") {
+                            PopoverManager.toggle(menuItem.popoverName);
                         }
                     }
                 }

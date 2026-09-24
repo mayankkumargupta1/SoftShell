@@ -5,18 +5,20 @@ import Quickshell.Hyprland
 import Quickshell.Io
 import "../services"
 import "../services/popover"
-import "../widgets/file"
+import "../widgets/edit"
 import "../theme"
 
-// FileWindow — Overlay PanelWindow displaying the SoftShell File Menu Popover
+// EditWindow — Overlay PanelWindow displaying the SoftShell Edit Menu Popover
 PanelWindow {
     id: root
 
-    property bool isOpen: PopoverManager.activePopover === "file"
+    property bool isOpen: PopoverManager.activePopover === "edit"
 
+    // Pull a fresh clipboard history every time the popover opens instead of
+    // polling cliphist in the background
     onIsOpenChanged: {
         if (isOpen) {
-            fileService.refresh();
+            clipboardHistoryService.refresh();
         }
     }
 
@@ -28,49 +30,49 @@ PanelWindow {
     color: "transparent"
 
     WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.namespace: "quickshell:file"
+    WlrLayershell.namespace: "quickshell:edit"
 
     visible: isOpen || popAnim.running
 
-    FileService {
-        id: fileService
+    ClipboardHistoryService {
+        id: clipboardHistoryService
     }
 
     function open() {
-        PopoverManager.open("file");
+        PopoverManager.open("edit");
     }
 
     function close() {
-        PopoverManager.close("file");
+        PopoverManager.close("edit");
     }
 
     function toggle() {
-        PopoverManager.toggle("file");
+        PopoverManager.toggle("edit");
     }
 
-    // IPC handler allowing "quickshell ipc call file toggle"
+    // IPC handler allowing "quickshell ipc call edit toggle"
     IpcHandler {
-        target: "file"
-        function toggle(): void { PopoverManager.toggle("file"); }
-        function open(): void { PopoverManager.open("file"); }
-        function close(): void { PopoverManager.close("file"); }
+        target: "edit"
+        function toggle(): void { PopoverManager.toggle("edit"); }
+        function open(): void { PopoverManager.open("edit"); }
+        function close(): void { PopoverManager.close("edit"); }
     }
 
-    // Semi-transparent click-outside dismiss area
+    // Click-outside dismiss area
     MouseArea {
         anchors.fill: parent
         hoverEnabled: false
         onClicked: PopoverManager.closeAll()
     }
 
-    // File Popover Card anchored neatly below the "File" menu item
-    FileCard {
+    // Edit Popover Card anchored neatly below the "Edit" menu item
+    EditCard {
         id: card
-        fileService: fileService
+        clipboardService: clipboardHistoryService
         anchors.top: parent.top
         anchors.topMargin: 3
         anchors.left: parent.left
-        anchors.leftMargin: PopoverManager.fileMenuX
+        anchors.leftMargin: PopoverManager.editMenuX
 
         opacity: root.isOpen ? 1 : 0
         scale: root.isOpen ? 1.0 : 0.94

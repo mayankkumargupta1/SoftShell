@@ -11,6 +11,7 @@ Scope {
     BatteryWindow {}
     NetworkWindow {}
     FileWindow {}
+    EditWindow {}
     OsdWindow {}
 
     // Global IPC target: "quickshell ipc call popover toggle <name>"
