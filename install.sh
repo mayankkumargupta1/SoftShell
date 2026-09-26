@@ -292,8 +292,9 @@ hl.bind(mainMod .. " + A", hl.dsp.exec_cmd("quickshell ipc call launcher toggle"
 hl.bind(mainMod .. " + D", hl.dsp.exec_cmd("quickshell ipc call launcher toggle"))
 -- Super + W cycles desktop wallpaper from ~/Pictures/Wallpapers
 hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("bash ~/.config/quickshell/scripts/wallpaper.sh next"))
--- Super + R reloads the shell configuration
-hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("pkill -USR1 quickshell || quickshell"))
+-- Super + R reloads the shell (SIGUSR1 kills this Quickshell build, so reload.sh
+-- does a stop + detached restart instead — see scripts/reload.sh)
+hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("bash ~/.config/quickshell/scripts/reload.sh"), { locked = true })
 
 -- Workspaces Navigation (Native Hyprland Lua dispatchers)
 for i = 1, 10 do
