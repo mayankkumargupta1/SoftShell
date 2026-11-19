@@ -150,7 +150,8 @@ else
 fi
 
 echo "Restarting desktop shell..."
-systemctl --user stop softshell-wallpaper.service 2>/dev/null || true
+systemctl --user stop --no-block softshell-wallpaper.service 2>/dev/null || true
+systemctl --user reset-failed softshell-wallpaper.service 2>/dev/null || true
 killall mpvpaper 2>/dev/null || true
 killall quickshell 2>/dev/null || true
 if command -v serpantinumd &>/dev/null; then
@@ -261,6 +262,7 @@ hl.bind(mainMod .. " + Down", hl.dsp.focus({ direction = "down" }))
 
 -- Window State
 hl.bind("ALT + F4", hl.dsp.window.close())
+hl.bind(mainMod .. " + M", hl.dsp.window.fullscreen())
 hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.float({ action = "toggle" }))
 
 -- Hardware: Brightness Controls (brightnessctl)
@@ -323,6 +325,31 @@ hl.layer_rule({ "ignorealpha 0.1", "quickshell:osd" })
 EOF
             success "Added layer rules to settings.lua."
         fi
+
+        if ! grep -q "suppress-maximize-events" "$SETTINGS_FILE"; then
+            cat << 'EOF' >> "$SETTINGS_FILE"
+
+-- Suppress maximize events so windows tile normally and do not accidentally open maximized
+hl.window_rule({
+	name = "suppress-maximize-events",
+	match = { class = ".*" },
+	suppress_event = "maximize",
+})
+EOF
+            success "Added suppress-maximize rule to settings.lua."
+        fi
+    fi
+
+    # 4.4 Configure Kitty window size memory
+    local KITTY_FILE="$HOME/.config/kitty/kitty.conf"
+    if [ -f "$KITTY_FILE" ]; then
+        if ! grep -q "remember_window_size" "$KITTY_FILE"; then
+            echo -e "\nremember_window_size no\ninitial_window_width 900\ninitial_window_height 600" >> "$KITTY_FILE"
+        else
+            sed -i 's/^remember_window_size .*/remember_window_size no/' "$KITTY_FILE"
+        fi
+        sed -i '/^allow_maximize/d' "$KITTY_FILE"
+        success "Configured kitty.conf to disable window size remembering."
     fi
 }
 
@@ -335,6 +362,11 @@ apply_live_switchover() {
     if command -v serpantinumd &>/dev/null; then
         serpantinumd stop 2>/dev/null || true
     fi
+
+    # Clean up stale wallpaper daemon units or failed states
+    systemctl --user stop --no-block softshell-wallpaper.service 2>/dev/null || true
+    systemctl --user reset-failed softshell-wallpaper.service 2>/dev/null || true
+    pkill -x mpvpaper 2>/dev/null || true
 
     sleep 1
 
