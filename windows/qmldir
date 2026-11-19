@@ -1,0 +1,10 @@
+BarWindow 1.0 BarWindow.qml
+BatteryWindow 1.0 BatteryWindow.qml
+EditWindow 1.0 EditWindow.qml
+FileWindow 1.0 FileWindow.qml
+GoWindow 1.0 GoWindow.qml
+LauncherWindow 1.0 LauncherWindow.qml
+NetworkWindow 1.0 NetworkWindow.qml
+NotchWindow 1.0 NotchWindow.qml
+OsdWindow 1.0 OsdWindow.qml
+ViewWindow 1.0 ViewWindow.qml

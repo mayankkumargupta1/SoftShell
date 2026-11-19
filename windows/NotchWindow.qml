@@ -30,7 +30,7 @@ PanelWindow {
 
     // Wayland namespace for compositor window rules
     WlrLayershell.namespace: "quickshell:notch"
-    WlrLayershell.layer: WlrLayer.Overlay
+    WlrLayershell.layer: WlrLayer.Top
     WlrLayershell.exclusionMode: ExclusionMode.Ignore
 
     // Reactive time and date service

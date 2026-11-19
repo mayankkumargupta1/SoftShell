@@ -3,6 +3,9 @@
 .DS_Store
 *.eml
 .claude
+.cursor
+.gemini
+opencode.jsonc
 
 # graft's local graph cache — regenerable, not committed (run `graft build`).
 /graft/

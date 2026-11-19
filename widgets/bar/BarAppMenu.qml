@@ -14,7 +14,7 @@ Item {
     readonly property var menuItems: ["File", "Edit", "View", "Go", "Tools", "Window", "Help"]
 
     // Menu label -> popover name. Adding another dropdown menu is one entry here.
-    readonly property var popoverFor: ({ "File": "file", "Edit": "edit" })
+    readonly property var popoverFor: ({ "File": "file", "Edit": "edit", "View": "view", "Go": "go" })
 
     // Publish a menu item's screen X as PopoverManager.<name>MenuX so its
     // popover docks directly under the trigger instead of a magic offset.

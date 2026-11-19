@@ -1,0 +1,16 @@
+AudioService 1.0 AudioService.qml
+BrightnessService 1.0 BrightnessService.qml
+ClipboardHistoryService 1.0 ClipboardHistoryService.qml
+ClipboardService 1.0 ClipboardService.qml
+FileService 1.0 FileService.qml
+LauncherService 1.0 LauncherService.qml
+MediaService 1.0 MediaService.qml
+NetworkService 1.0 NetworkService.qml
+NotificationService 1.0 NotificationService.qml
+PowerService 1.0 PowerService.qml
+SystemStatsService 1.0 SystemStatsService.qml
+ThemeGenService 1.0 ThemeGenService.qml
+TimeService 1.0 TimeService.qml
+ViewService 1.0 ViewService.qml
+WallpaperService 1.0 WallpaperService.qml
+WorkspaceNavService 1.0 WorkspaceNavService.qml

@@ -17,6 +17,14 @@ QtObject {
     // popover can dock directly beneath its trigger instead of a magic offset.
     property real editMenuX: 48
 
+    // Screen X of the "View" menu item, published by BarAppMenu so the View
+    // popover can dock directly beneath its trigger instead of a magic offset.
+    property real viewMenuX: 88
+
+    // Screen X of the "Go" menu item, published by BarAppMenu so the Go
+    // popover can dock directly beneath its trigger instead of a magic offset.
+    property real goMenuX: 130
+
     // Read-only convenience property
     readonly property bool hasActivePopover: activePopover !== ""
 
